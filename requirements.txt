@@ -1,0 +1,15 @@
+Django
+PIL
+argparse
+django-bootstrap3
+django-debug-panel
+django-debug-toolbar
+django-extensions
+django-taggit
+django-uuslug
+postmarkup
+python-slugify
+simplejson
+six
+sqlparse
+wsgiref

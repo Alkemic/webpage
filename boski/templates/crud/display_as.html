@@ -1,0 +1,56 @@
+{% load utils_tags i18n %}
+<script type="text/javascript">
+    function _displayDate(index, value, data){
+        try{
+            var dateMatch = value.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}:[0-9]{2})/);
+            if(dateMatch.length!=5)
+                return value
+
+            return dateMatch[3]+'-'+dateMatch[2]+'-'+dateMatch[1];
+        }catch(e){
+            return '';
+        }
+    }
+
+    function _displayDateTime(index, value, data){
+        try{
+            var dateMatch = value.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}:[0-9]{2})/);
+            if(dateMatch.length!=5)
+                return value
+
+            return dateMatch[3]+'-'+dateMatch[2]+'-'+dateMatch[1]+' '+dateMatch[4];
+        }catch(e){
+            return '';
+        }
+    }
+
+    function _displayAsIs(index, value, data){
+        return value;
+    }
+
+    function _displayEditLink(index, value, data, meta){
+        {% if allow_update %}
+        if(meta.canEdit)
+            return ('<a title="{% trans 'Edit' %}: '+value+'" href="{% url actions.update|prepend_namespace:request pk=123 %}">'+value+'</a>').replace('123', data.id);
+        else
+            return value;
+        {% else %}
+        return value;
+        {% endif %}
+    }
+
+    function _displayActionLink(index, value, data, meta){
+        var entry = '';
+        {% if allow_update %}
+        if(meta.canEdit)
+            entry += '<a title="{% trans 'Edit' %}: '+data.title+'" href="{% url actions.update|prepend_namespace:request pk=123 %}"><i class="glyphicon glyphicon-pencil"></i></a> '.replace('123', data.id);
+        {% endif %}
+
+        {% if allow_delete %}
+        if(meta.canDelete)
+            entry += '<a title="{% trans 'Delete' %}: '+data.title+'" href="{% url actions.delete|prepend_namespace:request pk=123 %}"><i class="glyphicon glyphicon-trash"></i></a> '.replace('123', data.id);
+        {% endif %}
+
+        return entry;
+    }
+</script>

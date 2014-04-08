@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n bootstrap3 utils_tags cache %}
+
+{% block title %}{{ entry }} - {% trans 'Blog' %}{% endblock %}
+
+{% block content %}
+    <div class="blog">
+        <div class="page-header"><h2>{{ entry.title|upper }}</h2></div>
+
+        {% if not entry.created_at|within_time:'180d' %}
+        <div class="alert alert-warning">{% trans "Be aware, this post is more than 6 months old. Informations here may or may not be not up to date." %}</div>
+        {% endif %}
+
+        {% if entry.teaser_r %}
+        <blockquote class="teaser">
+            {{ entry.teaser_r|safe }}
+        </blockquote>
+        {% endif %}
+
+        <div class="content">
+            {{ entry.content_r|safe }}
+        </div>
+
+        {% with entry.tags.all as entry_tags %}
+            {% if entry_tags %}
+            <div class="control form-actions">
+                {% trans 'Tagged' %}: {% for t in entry_tags %}<a href="{% url 'blog:tag' t %}">{{ t }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+            </div>
+            {% endif%}
+        {% endwith %}
+
+        <ul class="pager">
+            {% if entry.get_prev_post %}<li class="previous"><a href="{{ entry.get_prev_post.get_absolute_url }}">&larr; {{ entry.get_prev_post }}</a></li>{% endif %}
+            {% if entry.get_next_post %}<li class="next"><a href="{{ entry.get_next_post.get_absolute_url }}">{{ entry.get_next_post }} &rarr;</a></li>{% endif %}
+        </ul>
+    </div>
+{% endblock %}

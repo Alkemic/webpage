@@ -1,0 +1,38 @@
+{% load utils_tags i18n %}
+<script type="text/javascript">
+    function _displayActionWithActivationToggleLink(index, value, data, meta){
+        var entry = '';
+        {% url 'toggle-active'|prepend_namespace:request pk=123  as toggleActiveUrl %}
+        if(!data.is_active){
+            entry += '<a title="{% trans 'Activate' %}: '+data.title+'" href="{{ toggleActiveUrl }}"><i class="glyphicon glyphicon-plus"></i></a> '.replace('123', data.id);
+        }else if(!!data.is_active){
+            entry += '<a title="{% trans 'Deactivate' %}: '+data.title+'" href="{{ toggleActiveUrl }}"><i class="glyphicon glyphicon-minus"></i></a> '.replace('123', data.id);
+        }
+
+        {% if allow_update %}
+        if(meta.canEdit)
+            entry += '<a title="{% trans 'Edit' %}: '+data.title+'" href="{% url actions.update|prepend_namespace:request pk=123 %}"><i class="glyphicon glyphicon-pencil"></i></a> '.replace('123', data.id);
+        {% endif %}
+
+        {% if allow_delete %}
+        if(meta.canDelete)
+            entry += '<a title="{% trans 'Delete' %}: '+data.title+'" href="{% url actions.delete|prepend_namespace:request pk=123 %}"><i class="glyphicon glyphicon-trash"></i></a> '.replace('123', data.id);
+        {% endif %}
+
+{#        entry += '<a href="{% url actions.update|prepend_namespace:request pk=123 %}"><i class="glyphicon glyphicon-pencil"></i></a> '.replace('123', data.id);#}
+{#        entry += '<a href="{% url actions.delete|prepend_namespace:request pk=123 %}"><i class="glyphicon glyphicon-trash"></i></a> '.replace('123', data.id);#}
+
+        return entry;
+    }
+
+{#    function _displayStaticLink(index, value, data, meta){#}
+{#        var entry = '';#}
+{#        if(meta.canEdit)#}
+{#            entry += '<a href="{% url actions.update|prepend_namespace:request pk=123 %}"><i class="glyphicon glyphicon-pencil"></i></a> '.replace('123', data.id);#}
+{##}
+{#        if(meta.canDelete)#}
+{#            entry += '<a href="{% url actions.delete|prepend_namespace:request pk=123 %}"><i class="glyphicon glyphicon-trash"></i></a> '.replace('123', data.id);#}
+{##}
+{#        return entry;#}
+{#    }#}
+</script>

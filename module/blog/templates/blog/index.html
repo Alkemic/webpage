@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load bootstrap3 utils_tags i18n %}
+
+{% block title %}{% trans 'Blog' %}{% endblock %}
+
+{% block content %}
+
+<div class="blog">
+    {% for entry in list %}
+    <div class="entry">
+        <h2><a href="{{ entry.get_absolute_url }}">{{ entry.title }}</a></h2>
+{#        <div class="date">{{ entry.created_at|show_sexy_date }}</div>#}
+        <div class="teaser">
+            {{ entry.teaser_r|safe }}
+        </div>
+        <div class="control text-right">
+            <a href="{{ entry.get_absolute_url }}">{% trans 'Read more' %}</a>
+        </div>
+    </div>
+    <hr/>
+    {% endfor %}
+
+    {% if is_paginated %}
+    <div class="text-center">
+        {% bootstrap_pagination page_obj %}
+    </div>
+{% endif %}
+</div>
+
+{% endblock %}

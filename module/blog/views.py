@@ -1,0 +1,50 @@
+# -*- coding: utf-8 -*-
+from django.core.urlresolvers import reverse_lazy
+from django.views.generic import ListView, DetailView
+from django.utils.translation import ugettext_lazy as _
+
+from boski.mixins import BreadcrumbsMixin
+
+from module.blog.models import Entry
+
+from boski.helpers.cache import delete_view_cache
+
+class BlogList(BreadcrumbsMixin, ListView):
+    template_name = 'blog/index.html'
+    context_object_name = 'list'
+    queryset = Entry.objects.published()
+    paginate_by = 10
+    breadcrumbs = ((_('Blog'), reverse_lazy('blog:index')),)
+
+    def dispatch(self, request, *args, **kwargs):
+        print delete_view_cache(pattern='blog:index')
+        print delete_view_cache(request.path)
+        return super(BlogList, self).dispatch(request, *args, **kwargs)
+
+
+class TagBlogList(BreadcrumbsMixin, ListView):
+    template_name = 'blog/index.html'
+    context_object_name = 'list'
+    paginate_by = 10
+
+    @property
+    def breadcrumbs(self):
+        return (_('Blog'), reverse_lazy('blog:index')), \
+               (_('Tag: %s') % self.kwargs['tag'], reverse_lazy('blog:tag', args=[self.kwargs['tag']])),
+
+    def get_queryset(self):
+        return Entry.objects.published().filter(tags__name=self.kwargs['tag'])
+
+
+class EntryView(BreadcrumbsMixin, DetailView):
+    template_name = 'blog/entry.html'
+    context_object_name = 'entry'
+    queryset = Entry.objects.published()
+
+    @property
+    def breadcrumbs(self):
+        if not hasattr(self, 'object') or self.object is None:
+            self.object = self.get_object()
+
+        return ((_('Blog'), reverse_lazy('blog:index')),
+                ('%s' % self.object, self.object.get_absolute_url()),)

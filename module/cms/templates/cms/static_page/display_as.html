@@ -1,0 +1,27 @@
+{% load utils_tags %}
+<script type="text/javascript">
+    function _displayStaticActionLink(index, value, data, meta){
+        var entry = '';
+        if(meta.canEdit && !data.activated_at)
+            entry += '<a title="Aktywuj '+data.title+'" href="{% url 'activate'|prepend_namespace:request pk=123 %}"><i class="glyphicon glyphicon-plus"></i></a> '.replace('123', data.id);
+
+        if(meta.canEdit)
+            entry += '<a href="{% url actions.update|prepend_namespace:request pk=123 %}"><i class="glyphicon glyphicon-pencil"></i></a> '.replace('123', data.id);
+
+        if(meta.canDelete)
+            entry += '<a href="{% url actions.delete|prepend_namespace:request pk=123 %}"><i class="glyphicon glyphicon-trash"></i></a> '.replace('123', data.id);
+
+        return entry;
+    }
+
+    function _displayStaticLink(index, value, data, meta){
+        var entry = '';
+        if(meta.canEdit)
+            entry += '<a href="{% url actions.update|prepend_namespace:request pk=123 %}"><i class="glyphicon glyphicon-pencil"></i></a> '.replace('123', data.id);
+
+        if(meta.canDelete)
+            entry += '<a href="{% url actions.delete|prepend_namespace:request pk=123 %}"><i class="glyphicon glyphicon-trash"></i></a> '.replace('123', data.id);
+
+        return entry;
+    }
+</script>

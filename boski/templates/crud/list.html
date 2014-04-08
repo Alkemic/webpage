@@ -1,0 +1,311 @@
+{% extends "cms/base.html" %}
+{% load i18n %}
+{% load utils_tags %}
+
+{% block title %}{{ name }}{% endblock %}
+
+{% block content %}
+    <h2 class="page-header">{{ name }}</h2>
+
+    <div class="content">
+        <div class="pull-left">
+            {% if allow_create %}
+            <a href="{% url actions.create|prepend_namespace:request %}" class="btn btn-primary submit" style="margin-top: 0px;">{% trans 'Create' %}</a>
+            {% endif %}
+        </div>
+        <form class="form-search pull-right form-list-search form-inline " role="form" id="{{ currentModule }}-{{ currentController }}-form-list-search" style="text-align: right;">
+            <div class="input-append">
+                <input type="text" class="search-query form-control" name="phrase" placeholder="{% trans "Enter phrase" %}" />
+                <button type="submit" class="btn btn-default">{% trans "Search" %}</button>
+            </div>
+            <br/>
+
+            <div class="filters">
+            {% for name, filter in filters %}
+                {% if filter.type == 'select' %} {# obsługa selectu #}
+                    {% if filter.label %}<label for="filter_{{ name }}">{{ filter.label }}</label>{% endif %}
+                    <select name="{{ name }}" class="form-control filter {{ filter.class }}" id="filter_{{ name }}">
+                        {% for key in filter.options %}
+                            <option value="{{ key }}">{{ filter.options|get_key:key }}</option>
+                        {% endfor %}
+                    </select>
+                {% elif filter.type == 'text' %} {# obsługa zwykłego tekstu #}
+                    {% if filter.label %}<label for="filter_{{ name }}">{{ filter.label }}</label>{% endif %}
+                    <input type="text" name="{{ name }}" class="form-control filter {{ filter.class }}" id="filter_{{ name }}" />
+                {% endif %}
+            {% endfor %}
+            </div>
+        </form>
+
+        <div class="clr"></div>
+
+        <table class="table table-hover table-striped table-condensed " id="list-table">
+            <thead>
+            <tr>
+                {% for key, value in listingColumns %}
+                    <th class="th-{{ key }}{% if key in orderingColumns %} ordering{% endif %}" rel="{{ key }}">{{ value }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="loading">
+                <td colspan="{{ listingColumns|length }}">{% trans 'Loading data' %}</td>
+            </tr>
+            <tr class="empty" style="display: none;">
+                <td colspan="{{ listingColumns|length }}">{% trans 'No results' %}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="text-center"><ul class="pagination" style="display: none;" id="pagination"></ul></div>
+    </div>
+
+    {% include 'crud/display_as.html' %}
+    {# Try to include addition display_as functions, from local template directory #}
+    {% try_to_include 'display_as.html'|get_default_path:request %}
+
+    <script>
+        var columns = { {% for key, value in listingColumns %}{{ key }}: '{{ value }}'{% if not loop.last %},{% endif %}{% endfor %} };
+        var columnsMap = { {% for key in mapColumns %}{{ key }}: {{ mapColumns|get_key:key }}{% if not loop.last %},{% endif %}{% endfor %} };
+    </script>
+    <script>
+    function getHashParams(){
+        var hashParams = {};
+        var e,
+                a = /\+/g,  // Regex for replacing addition symbol with a space
+                r = /([^&;=]+)=?([^&;]*)/g,
+                d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+                q = window.location.hash.substring(1);
+
+        while (e = r.exec(q))
+            hashParams[d(e[1])] = d(e[2]);
+
+        return hashParams;
+    }
+
+    function buildParams(_params){
+        var t = [], key;
+        for(key in _params){
+            if(typeof(_params[key]) != 'function' && !(_params[key] instanceof Array)){
+                t.push(key+'='+_params[key]);
+            }
+        }
+
+        return t.join('&');
+    }
+
+    // flaga zapobiegująca przeładowaniom przy hashchange
+    var inLoading = false;
+
+    $(document).ready(function(){
+        $('input.calendar').datepicker({format: "yy-mm-dd"});
+
+        var listTable = $('#list-table'),
+            listTableHead = $('#list-table thead'),
+            listTableBody = $('#list-table tbody');
+
+        var loadedList = function(data){
+            listTableBody.find('tr.data-row').remove();
+            listTableBody.find('tr.loading').hide();
+            listTableBody.find('tr.empty').hide();
+
+        try{
+            var _meta = data._meta;
+            data = data.data;
+        }catch(e){
+            _meta = {};
+        }
+
+        if(_meta.items > 0){
+            for(i in data){
+                var row = data[i];
+                if(typeof(row) == 'function') continue;
+
+                var tableRow = $('<tr class="data-row" />');
+
+                for(columnName in columns){
+                    tableRow.append('<td>'+columnsMap[columnName](columnName, row[columnName], row, _meta)+'</td>');
+                }
+
+                listTableBody.append(tableRow);
+            }
+        }else{
+            listTableBody.find('tr.empty').show();
+        }
+
+        var paginationUl = $('ul#pagination');
+        if(_meta.pages > 1){
+            paginationUl.find('li').remove();
+            paginationUl.append(_meta.currentPage>1?'<li><a rel="'+(_meta.currentPage-1)+'">&laquo;</a></li>':'<li><span>&laquo;</span></li>');
+
+            for(var i=1; i<=_meta.pages; i++){
+                var pLi = $('<li/>');
+                pLi.append($('<a/>').append(i).attr('rel', i));
+                if(_meta.currentPage == i) pLi.addClass('active');
+                paginationUl.append(pLi);
+            }
+
+            paginationUl.append(_meta.currentPage<_meta.pages?'<li><a rel="'+(_meta.currentPage+1)+'">&raquo;</a></li>':'<li><span>&raquo;</span></li>');
+            paginationUl.show();
+        }else{
+            paginationUl.hide();
+        }
+
+        inLoading = false;
+    };
+
+        var loadData = function(params){
+            inLoading = true;
+            listTableBody.find('tr.loading').hide();
+
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    var csrftoken = $.cookie('csrftoken');
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            });
+
+            $.post('{% url actions.index|prepend_namespace:request %}', params, loadedList, 'json');
+        };
+
+        var setState = function(){
+            var params = getHashParams();
+
+            if(params){
+                for(var name in params){
+                    var whereMatch = /where\[(.*)\]/;
+
+                    // ustawianie filtrów
+                    var matched = name.match(whereMatch);
+                    if(matched){
+                        $('select#filter_'+matched[1]+' option').filter(function() {
+                            return $(this).val() == params[name];
+                        }).prop('selected', true);
+                        $('input#filter_'+matched[1]).val(params[name]);
+                    }
+
+                    // ustawianie frazy wyszukiwania
+                    if(name == 'phrase')
+                        $('form.form-list-search input[name=phrase]').val(params['phrase']);
+
+                    if(name == 'ordering'){
+                        var desc = params['ordering'][0]=='-';
+                        var orderingColumnName = desc?params['ordering'].substr(1):params['ordering'];
+
+                        $('.ordering').each(function(e, i){
+                            var self = $(this);
+
+                            if(self.attr('rel') == orderingColumnName){
+                                self.html(self.html()+(desc?' v':' ^'));
+                                self.attr('ordering-type', desc?'desc':'asc')
+                            }
+                        });
+
+                    }
+                }
+
+                loadData(params);
+            }else{
+                loadData({});
+            }
+        };
+
+        setState();
+
+        // wyszukiwanie
+        $('form.form-list-search').bind('submit', function(e){
+            e.preventDefault();
+            var self = $(this);
+            var phrase = self.find('input[name=phrase]').val();
+
+            var params = getHashParams();
+            params.phrase = phrase;
+            params.page = 1;
+
+            window.location.hash = buildParams(params);
+            loadData(params);
+        });
+
+        // kolejność wpisów
+        $('.ordering').bind('click', function(e){
+            var self = $(this);
+            var columnName = self.attr('rel');
+            var orderingType = self.attr('ordering-type');
+
+            $('.ordering').each(function(e, i){
+                var self = $(this);
+
+                if(self.attr('rel') != columnName){
+                    self.html(self.html().replace(/([\^v])/i, ''));
+                    self.removeAttr('ordering-type');
+                }
+            });
+
+            // domyślnie kolejność zamieniamy na malejącą
+            if(typeof(orderingType) == 'undefined' || orderingType == 'asc'){
+                orderingType = 'desc';
+                self.attr('ordering-type', 'desc');
+
+                if(self.html().match(' ^') == null){
+                    if(self.html().match(' v'))
+                        self.html(self.html().replace('v', '^'));
+                    else
+                        self.html(self.html()+' v');
+                }else{
+                    self.html(self.html().replace('^', 'v'));
+                }
+            }else{
+                orderingType = 'asc';
+                self.attr('ordering-type', 'asc');
+
+                self.html(self.html().replace('v', '^'));
+            }
+
+            self.html(self.html().replace('^ v', 'v').replace('v ^', '^'));
+
+            var params = getHashParams();
+            params.ordering = (orderingType=='desc'?'-':'')+columnName;
+            window.location.hash = buildParams(params);
+            loadData(params);
+        });
+
+        // obsługa filtrów
+        var filterList = $('form .filter');
+        filterList.bind('change', function(){
+            var self = $(this);
+            var whereList = [];
+            var params = getHashParams();
+
+            filterList.each(function(){
+                var self = $(this);
+                if(self.val())
+                    params['where['+self.attr('name')+']'] = self.val();
+                else
+                    delete params['where['+self.attr('name')+']'];
+            });
+
+            params.where = whereList;
+            window.location.hash = buildParams(params);
+            loadData(params);
+        });
+
+        // stronicowanie
+        $('ul#pagination').delegate('a', 'click', function(){
+            var params = {phrase: $('form.form-list-search input[name=phrase]').val(), page: $(this).attr('rel')};
+
+            var _params = getHashParams();
+            _params.page = $(this).attr('rel');
+            window.location.hash = buildParams(_params);
+            loadData(params);
+        });
+
+        // zmiany w hash
+        $(window).on('hashchange', function(){
+            if(inLoading) return;
+            setState();
+        });
+
+    });
+    </script>
+
+{% endblock %}

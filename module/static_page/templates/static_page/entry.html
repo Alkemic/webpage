@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n utils_tags %}
+
+{% block title %}{{ entry.title }}{% endblock %}
+
+{% block content %}
+    <div class="static-page">
+        <div class="page-header">
+            <h2>{{ entry.title }}</h2>
+        </div>
+
+        <div class="content">
+            {{ entry.content_r|safe }}
+        </div>
+
+        {% with entry.tags.all as entry_tags %}
+            {% if entry_tags %}
+            <div class="control form-actions">
+                {% trans 'Tagged' %}: {% for t in entry_tags %}{{ t }}{% if not forloop.last %}, {% endif %}{% endfor %}
+            </div>
+            {% endif%}
+        {% endwith %}
+    </div>
+{% endblock %}

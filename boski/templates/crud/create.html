@@ -1,0 +1,29 @@
+{% extends "cms/base.html" %}
+
+{% load bootstrap3 %}
+{% load i18n %}
+{% load utils_tags %}
+
+{% block title %}{{ name }}{% endblock %}
+
+{% block content %}
+    <h2 class="page-header">{{ name }}</h2>
+
+    <form class="form-horizontal" method="post" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form form layout='horizontal' field_class='col-sm-9' label_class='col-sm-3' %}
+
+        <div class="form-actions row">
+            <div class="col-sm-3">&nbsp;</div>
+            <div class="col-sm-9">
+                <button type="submit" class="btn btn-primary" name="next" value="none">
+                    <i class="icon icon-edit"></i> {% trans 'Create' %}
+                </button>
+                <a class="btn btn-default" href="{% url 'index'|prepend_namespace:request %}">
+                    <i class="icon icon-arrow-left"></i> {% trans 'Cancel' %}
+                </a>
+            </div>
+{#            <div class="clearfix"></div>#}
+        </div>
+    </form>
+{% endblock %}
