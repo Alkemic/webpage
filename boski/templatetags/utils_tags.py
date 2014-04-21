@@ -13,10 +13,17 @@ from django.core.urlresolvers import reverse, resolve
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
+from postmarkup.parser import create, pygments_available, SimpleTag, strip_bbcode as postmarkup_strip_bbcode
+
 from boski.helpers import generate_thumb
 
 
 register = template.Library()
+
+_postmarkup = create(use_pygments=pygments_available, annotate_links=False)
+for i in xrange(1, 7):
+    _postmarkup.tag_factory.add_tag(SimpleTag, 'h%d' % i, 'h%d' % i)
+render_bbcode = _postmarkup.render_to_html
 
 
 @register.filter
@@ -30,8 +37,6 @@ def rm_kurwa(text):
     kurwa_regex = '(?i)chuj|chuje|chuji|chujki|kurwa|kurwy|dziwka|dziwki|dziwko|kutas|kutasy|kutasie|suka|suki|suko|' \
                   'suczko|skurwiel|skurwielu|skurwiele|skurwieli|cwel|cwele|cweli|peneras|chwdp|hwdp'
     return '#$%^&*'.join(re.split(kurwa_regex, text))
-
-
 rm_kurwa.is_save = True
 
 
@@ -41,27 +46,10 @@ def bbcode(value):
     Generates (X)HTML from string with BBCode "markup".
     By using the postmark lib from:
     @see: http://code.google.com/p/postmarkup/
+
     """
-    try:
-        from postmarkup import render_bbcode
-    except ImportError:
-        if settings.DEBUG:
-            raise template.TemplateSyntaxError(
-                "Error in {% bbcode %} filter: The Python postmarkup library isn't installed.")
-        return force_unicode(value)
-    else:
-        return mark_safe(render_bbcode(value))
-
-
+    return mark_safe(render_bbcode(value, paragraphs=True))
 bbcode.is_save = True
-
-
-@register.filter(name='dir')
-def do_dir(value):
-    return dir(value)
-
-
-do_dir.is_save = True
 
 
 @register.filter
@@ -70,18 +58,16 @@ def strip_bbcode(value):
     Strips BBCode tags from a string
     By using the postmark lib from:
     @see: http://code.google.com/p/postmarkup/
+
     """
-    try:
-        from postmarkup import strip_bbcode
-    except ImportError:
-        if settings.DEBUG:
-            raise template.TemplateSyntaxError, "Error in {% bbcode %} filter: The Python postmarkup library isn't installed."
-        return force_unicode(value)
-    else:
-        return mark_safe(strip_bbcode(value))
+    return mark_safe(postmarkup_strip_bbcode(value))
+strip_bbcode.is_save = True
 
 
-bbcode.is_save = True
+@register.filter(name='dir')
+def do_dir(value):
+    return dir(value)
+do_dir.is_save = True
 
 
 @register.filter

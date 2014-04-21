@@ -2,6 +2,16 @@ from django import template
 from django.conf import settings
 from django.utils.encoding import smart_str, force_unicode
 from django.utils.safestring import mark_safe
+from postmarkup import _postmarkup, SimpleTag, strip_bbcode as postmarkup_strip_bbcode
+from postmarkup.parser import create
+
+for i in xrange(1, 7):
+    create.add_tag(SimpleTag, 'h%d' % i, 'h%d' % i)
+
+for i in xrange(1, 7):
+    _postmarkup.tag_factory.add_tag(SimpleTag, 'h%d' % i, 'h%d' % i)
+
+render_bbcode = _postmarkup.render_to_html
 
 register = template.Library()
 
@@ -13,14 +23,7 @@ def bbcode(value):
     @see: http://code.google.com/p/postmarkup/
 
     """
-    try:
-        from postmarkup import render_bbcode
-    except ImportError:
-        if settings.DEBUG:
-            raise template.TemplateSyntaxError, "Error in {% bbcode %} filter: The Python postmarkup library isn't installed."
-        return force_unicode(value)
-    else:
-        return mark_safe(render_bbcode(value))
+    return mark_safe(render_bbcode(value))
 bbcode.is_save = True
 
 @register.filter
@@ -31,12 +34,5 @@ def strip_bbcode(value):
     @see: http://code.google.com/p/postmarkup/
 
     """
-    try:
-        from postmarkup import strip_bbcode
-    except ImportError:
-        if settings.DEBUG:
-            raise template.TemplateSyntaxError, "Error in {% bbcode %} filter: The Python postmarkup library isn't installed."
-        return force_unicode(value)
-    else:
-        return mark_safe(strip_bbcode(value))
-bbcode.is_save = True
+    return mark_safe(postmarkup_strip_bbcode(value))
+strip_bbcode.is_save = True
