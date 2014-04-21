@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+from django import http
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -16,7 +17,7 @@ __author__ = 'Daniel Alkemic Czuba <dc@danielczuba.pl>'
 
 
 class List(LoginRequiredMixin, ListView):
-    queryset = Entry.objects.all()
+    queryset = Entry.objects.all().filter(deleted_at__isnull=True)
 
     breadcrumbs = ({'name': _('Portfolio'), 'url': 'cms:portfolio:index'},)
 
@@ -170,3 +171,15 @@ class CompanyDelete(LoginRequiredMixin, DeleteView):
         return {'name': _('Portfolio'), 'url': 'cms:portfolio:index'}, \
                {'name': _('Company'), 'url': 'cms:portfolio:company-index'},\
                {'name': self.name, 'url': 'cms:portfolio:company-delete', 'pk': self.get_object().pk}
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        try:
+            self.object.delete()
+
+            messages.success(request, _('Entry has been deleted'))
+            return http.HttpResponseRedirect(success_url)
+        except:
+            messages.error(request, _('An error has occurred'))
