@@ -10,7 +10,7 @@
         </div>
 
         <div class="content">
-            {{ entry.content_r|safe }}
+            {{ entry.content|bbcode }}
         </div>
 
         {% with entry.tags.all as entry_tags %}

@@ -179,6 +179,13 @@ class UpdateView(BreadcrumbsMixin, DjangoUpdateView):
     def name(self):
         return _('Edit entry "%s"') % self.get_object()
 
+    def get_object(self, queryset=None):
+        if not hasattr(self, '_object') or self._object is None:
+            obj = super(UpdateView, self).get_object(queryset)
+            self._object = obj
+
+        return self._object
+
     def get_context_data(self, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
         context['actions'] = self.actions

@@ -7,7 +7,6 @@ from boski.mixins import BreadcrumbsMixin
 
 from module.blog.models import Entry
 
-from boski.helpers.cache import delete_view_cache
 
 class BlogList(BreadcrumbsMixin, ListView):
     template_name = 'blog/index.html'
@@ -17,8 +16,6 @@ class BlogList(BreadcrumbsMixin, ListView):
     breadcrumbs = ((_('Blog'), reverse_lazy('blog:index')),)
 
     def dispatch(self, request, *args, **kwargs):
-        print delete_view_cache(pattern='blog:index')
-        print delete_view_cache(request.path)
         return super(BlogList, self).dispatch(request, *args, **kwargs)
 
 

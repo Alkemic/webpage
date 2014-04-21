@@ -16,5 +16,12 @@ form.search input{height: 28px !important; margin-top: 5px;}
 .form-actions:before, .form-actions:after{display: table; line-height: 0; content: "";}
 .form-actions:after{clear: both;}
 
+.label.label-python{background: #3776ab !important;}
+.label.label-django{background: #092e20 !important;}
+.label.label-php{background: #8892BF !important;}
+.label.label-nginx{background: red !important;}
+.label.label-apache{background: #303284 !important;}
+.label.label-test-code{background: hotpink !important;}
+
 /* CMS CSS part */
 body#cms .container{max-width: 1090px;}

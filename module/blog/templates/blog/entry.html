@@ -8,24 +8,22 @@
         <div class="page-header"><h2>{{ entry.title|upper }}</h2></div>
 
         {% if not entry.created_at|within_time:'180d' %}
-        <div class="alert alert-warning">{% trans "Be aware, this post is more than 6 months old. Informations here may or may not be not up to date." %}</div>
+            <div class="alert alert-warning">{% trans "Be aware, this post is more than 6 months old. Informations here may or may not be not up to date." %}</div>
         {% endif %}
 
         {% if entry.teaser_r %}
         <blockquote class="teaser">
-            {{ entry.teaser_r|safe }}
+            {{ entry.teaser|bbcode }}
         </blockquote>
         {% endif %}
 
         <div class="content">
-            {{ entry.content_r|safe }}
+            {{ entry.content|bbcode }}
         </div>
 
         {% with entry.tags.all as entry_tags %}
             {% if entry_tags %}
-            <div class="control form-actions">
-                {% trans 'Tagged' %}: {% for t in entry_tags %}<a href="{% url 'blog:tag' t %}">{{ t }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
-            </div>
+                {% for t in entry_tags %}<a class="label label-default label-{{ t|slugify }}" href="{% url 'blog:tag' t %}">{{ t }}</a> {% endfor %}
             {% endif%}
         {% endwith %}
 

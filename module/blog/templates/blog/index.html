@@ -9,12 +9,21 @@
     {% for entry in list %}
     <div class="entry">
         <h2><a href="{{ entry.get_absolute_url }}">{{ entry.title }}</a></h2>
-{#        <div class="date">{{ entry.created_at|show_sexy_date }}</div>#}
         <div class="teaser">
-            {{ entry.teaser_r|safe }}
+            {{ entry.teaser|bbcode }}
         </div>
-        <div class="control text-right">
-            <a href="{{ entry.get_absolute_url }}">{% trans 'Read more' %}</a>
+
+        <div class="row">
+            <div class="col-md-9">
+            {% with entry.tags.all as entry_tags %}
+                {% if entry_tags %}
+                    {% for t in entry_tags %}<a class="label label-default label-{{ t|slugify }}" href="{% url 'blog:tag' t %}">{{ t }}</a> {% endfor %}
+                {% endif%}
+            {% endwith %}
+            </div>
+            <div class="col-md-3 text-right">
+                <a href="{{ entry.get_absolute_url }}">{% trans 'Read more' %}</a>
+            </div>
         </div>
     </div>
     <hr/>

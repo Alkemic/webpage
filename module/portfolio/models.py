@@ -6,7 +6,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from taggit.managers import TaggableManager
 from uuslug import uuslug as slugify
-from postmarkup import render_bbcode
 
 
 __author__ = 'Daniel Alkemic Czuba <alkemic7@gmail.com>'
@@ -41,9 +40,6 @@ class Company(models.Model):
     def save(self, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name, instance=self)
-
-        # self.teaser_html = bbcode(self.teaser)
-        self.description_html = bbcode(self.description)
 
         super(Company, self).save(**kwargs)
 
@@ -97,8 +93,5 @@ class Entry(models.Model):
 
         if not self.slug:
             self.slug = slugify(self.name, instance=self)
-
-        # self.teaser_html = bbcode(self.teaser)
-        self.description_html = render_bbcode(self.description)
 
         super(Entry, self).save(**kwargs)

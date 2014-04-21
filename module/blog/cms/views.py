@@ -48,7 +48,7 @@ class List(LoginRequiredMixin, ListView):
 
 class Update(LoginRequiredMixin, UpdateView):
     model = Entry
-    fields = ['title', 'teaser', 'content', 'tags']
+    fields = ['title', 'teaser', 'content', 'tags', 'is_active']
 
     @property
     def breadcrumbs(self):
@@ -58,7 +58,7 @@ class Update(LoginRequiredMixin, UpdateView):
 
 class Create(LoginRequiredMixin, CreateView):
     model = Entry
-    fields = ['title', 'teaser', 'content', 'tags']
+    fields = ['title', 'teaser', 'content', 'tags', 'is_active']
 
     @property
     def breadcrumbs(self):

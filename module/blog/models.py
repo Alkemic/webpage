@@ -6,7 +6,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from uuslug import uuslug as slugify
 from taggit.managers import TaggableManager
-from postmarkup import render_bbcode
 
 from module.blog.managers import *
 
@@ -82,8 +81,5 @@ class Entry(models.Model):
 
         if not self.slug:
             self.slug = slugify(self.title, instance=self)
-
-        self.teaser_r = render_bbcode(self.teaser, paragraphs=True)
-        self.content_r = render_bbcode(self.content, paragraphs=True)
 
         super(Entry, self).save(**kwargs)
