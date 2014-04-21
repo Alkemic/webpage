@@ -7,6 +7,8 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 from django.core.mail import send_mail
 
+from dc.settings import ADMINS
+
 from boski.mixins import BreadcrumbsMixin
 
 from module.static_page.models import Entry
@@ -50,7 +52,7 @@ class Index(BreadcrumbsMixin, FormView):
         # sending email
         try:
             email = EmailMessage(mail_entry.subject, mail_entry.content, '%s <%s>' % (mail_entry.author, mail_entry.email),
-                ['to1@example.com', 'to2@example.com'], ['bcc@example.com'],
+                [a[1] for a in ADMINS],
                 headers={'Reply-To': '%s <%s>' % (mail_entry.author, mail_entry.email)})
             email.send(fail_silently=False)
         except:
