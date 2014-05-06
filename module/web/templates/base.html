@@ -44,8 +44,8 @@
                         <li{% if request.path|match_url:blogUrl %} class="active"{% endif %}><a href="{{ blogUrl }}">{% trans 'Blog' %}</a></li>
                         {% url 'portfolio:index' as portfolioUrl %}
                         <li{% if request.path|match_url:portfolioUrl %} class="active"{% endif %}><a href="{{ portfolioUrl }}">{% trans 'Portfolio' %}</a></li>
-                        {% url 'static_page:entry' slug='curriculum-vitae' as cvUrl %}
-                        <li{% if request.path|match_url:cvUrl %} class="active"{% endif %}><a href="{{ cvUrl }}">{% trans 'Curriculum Vitae' %}</a></li>
+                        {% url 'static_page:entry' slug='resume' as resumeUrl %}
+                        <li{% if request.path|match_url:resumeUrl %} class="active"{% endif %}><a href="{{ resumeUrl }}">{% trans 'Résumé' %}</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
 {#                        <li>#}
