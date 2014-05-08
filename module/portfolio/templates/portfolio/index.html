@@ -5,14 +5,15 @@
 
 {% block content %}
 
-<div class="blog">
-{#    {% for company in companies %}#}
-{#    <h2 class="page-header">{{ company }}</h2>#}
-    {% for entry in entries %}
-{#    {% for entry in company.entry_set.all %}#}
+<div class="blog" id="portfolio">
+    {% for company in companies %}
+    <h3 class="page-header">{{ company }}
+        <span class="small">({{ company.from_date|date:"m-Y" }} - {% if company.to_date %}{{ company.to_date|date:"m-Y" }}{% else %}{% trans 'present' %}{% endif %})</span>
+    </h3>
+
+    {% for entry in company.entry_set.all %}
     <div class="entry">
-        <h3 class="page-header">{{ entry }}</h3>
-{#        <div class="small text-info">{{ entry.created_at|show_sexy_date }}</div>#}
+        <h5 class="page-header">{{ entry }}</h5>
         <div class="row">
             <div class="col-md-4"><img src="{% if entry.main_photo %}{{ MEDIA_URL }}{% thumbnail_c entry.main_photo 240 160 %}{% else %}http://placehold.it/240x160/E8117F/ffffff{% endif %}" /></div>
             <div class="col-md-8">
@@ -22,16 +23,15 @@
                 {% if entry.demo %}
                 <i class="glyphicon glyphicon-globe"></i> <a href="{{ entry.site }}">{{ entry.site }}</a><br/>
                 {% endif %}
-                {% if entry.from_date and entry.to_date  %}
-                <i class="glyphicon glyphicon-calendar"></i> {{ entry.from_date|date:"m-Y" }} - {{ entry.to_date|date:"m-Y" }}<br/>
+                {% if entry.from_date %}
+                <i class="glyphicon glyphicon-calendar"></i> {{ entry.from_date|date:"m-Y" }} - {% if entry.to_date %}{{ entry.to_date|date:"m-Y" }}{% else %}{% trans 'present' %}{% endif %}<br/>
                 {% endif %}
-                {{ entry.description_html|safe }}
+                {{ entry.description|bbcode }}
             </div>
         </div>
     </div>
-{#    <hr/>#}
     {% endfor %}
-{#    {% endfor %}#}
+    {% endfor %}
 
 </div>
 
