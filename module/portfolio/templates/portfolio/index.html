@@ -15,7 +15,7 @@
 
     {% for entry in projects_list %}
     <div class="entry">
-        <h5 class="page-header">{{ entry }}</h5>
+        <h4 class="page-header">{{ entry }}</h4>
         <div class="row">
             <div class="col-md-4"><img src="{% if entry.main_photo %}{{ MEDIA_URL }}{% thumbnail_c entry.main_photo 240 160 %}{% else %}http://placehold.it/240x160/E8117F/ffffff{% endif %}" /></div>
             <div class="col-md-8">
