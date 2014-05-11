@@ -27,6 +27,12 @@
                 <i class="glyphicon glyphicon-calendar"></i> {{ entry.from_date|date:"m-Y" }} - {% if entry.to_date %}{{ entry.to_date|date:"m-Y" }}{% else %}{% trans 'present' %}{% endif %}<br/>
                 {% endif %}
                 {{ entry.description|bbcode }}
+
+                {% with entry.technologies.all as entry_tags %}
+                    {% if entry_tags %}
+                        {% for t in entry_tags %}<span class="label label-default label-{{ t|slugify }}">{{ t }}</span> {% endfor %}
+                    {% endif%}
+                {% endwith %}
             </div>
         </div>
     </div>
