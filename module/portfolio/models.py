@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from taggit.managers import TaggableManager
 from uuslug import uuslug as slugify
 
+from .managers import PublicManager
 
 __author__ = 'Daniel Alkemic Czuba <alkemic7@gmail.com>'
 
@@ -22,7 +23,6 @@ class Company(models.Model):
     to_date = models.DateField(_('To date'), blank=True, null=True)
 
     description = models.TextField(_('Description'), blank=False)
-    description_html = models.TextField(_('Description (html)'), blank=False)
 
     created_at = models.DateTimeField(_('Date created'), default=datetime.now())
 
@@ -58,7 +58,6 @@ class Entry(models.Model):
     photo_6 = models.ImageField(_('Additional photo #6'), upload_to='upload/%Y/%m', max_length=255, blank=True, null=True)
 
     description = models.TextField(_('Description'), blank=False, null=True)
-    description_html = models.TextField(_('Description (html)'), blank=True)
 
     technologies = TaggableManager(_('Technologies'), blank=True)
 
@@ -75,6 +74,8 @@ class Entry(models.Model):
 
     deleted_at = models.DateTimeField(_('Date deleted'), blank=True, null=True)
     published_at = models.DateTimeField(_('Date published'), blank=True, null=True)
+
+    objects = PublicManager()
 
     class Meta:
         verbose_name = _('Entry')

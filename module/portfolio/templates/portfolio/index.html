@@ -7,11 +7,13 @@
 
 <div class="blog" id="portfolio">
     {% for company in companies %}
+    {% with company.entry_set.non_deleted as projects_list %}
+    {% if projects_list %}
     <h3 class="page-header">{{ company }}
         <span class="small">({{ company.from_date|date:"m-Y" }} - {% if company.to_date %}{{ company.to_date|date:"m-Y" }}{% else %}{% trans 'present' %}{% endif %})</span>
     </h3>
 
-    {% for entry in company.entry_set.all %}
+    {% for entry in projects_list %}
     <div class="entry">
         <h5 class="page-header">{{ entry }}</h5>
         <div class="row">
@@ -37,6 +39,8 @@
         </div>
     </div>
     {% endfor %}
+    {% endif %}
+    {% endwith %}
     {% endfor %}
 
 </div>
