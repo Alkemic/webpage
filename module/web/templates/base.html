@@ -68,7 +68,7 @@
 
             <ol class="breadcrumb">
                 {% block breadcrumbs %}
-                    <li><a href="{% url 'cms:index' %}"><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a href="{% url 'index' %}"><i class="glyphicon glyphicon-home"></i></a></li>
                     {% if request.breadcrumbs %}
                         {% for name, url in request.breadcrumbs %}
                             <li{% if forloop.last %} class="active"{% endif %}><a href="{{ url }}">{{ name }}</a></li>
