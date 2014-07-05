@@ -14,11 +14,14 @@
     </h3>
 
     {% for entry in projects_list %}
-    <div class="entry">
-        <h4 class="page-header">{{ entry }}</h4>
-        <div class="row">
-            <div class="col-md-4"><img src="{% if entry.main_photo %}{{ MEDIA_URL }}{% thumbnail_c entry.main_photo 240 160 %}{% else %}http://placehold.it/240x160/E8117F/ffffff{% endif %}" /></div>
-            <div class="col-md-8">
+    <div class="row">
+        <div class="col-lg-7 col-md-7">
+            <img class="img-responsive" src="{% if entry.main_photo %}{{ MEDIA_URL }}{% thumbnail_c entry.main_photo 700 380 %}{% else %}http://placehold.it/700x380/E8117F/ffffff{% endif %}" alt="">
+        </div>
+
+        <div class="col-lg-5 col-md-5">
+            <h3>{{ entry }}</h3>
+            <p>
                 <div>
                     {% if entry.site or entry.demo or entry.source %}<i class="glyphicon glyphicon-globe"></i> {% endif %}
                     {% if entry.site %}<a href="{{ entry.site }}">WWW</a>{% if entry.demo or entry.source %}, {% endif %}{% endif %}
@@ -35,9 +38,11 @@
                         {% for t in entry_tags %}<span class="label label-default label-{{ t|slugify }}">{{ t }}</span> {% endfor %}
                     {% endif%}
                 {% endwith %}
-            </div>
+
+            </p>
         </div>
     </div>
+    <hr/>
     {% endfor %}
     {% endif %}
     {% endwith %}
