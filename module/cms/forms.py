@@ -59,5 +59,3 @@ class PasswordChangeForm(SetPasswordForm):
 
 
 PasswordChangeForm.base_fields.keyOrder = ['old_password', 'new_password1', 'new_password2']
-
-

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
 from uuslug import uuslug as slugify
 from taggit.managers import TaggableManager
 
@@ -35,7 +33,7 @@ class Entry(models.Model):
     class Meta:
         verbose_name = _('Entry')
         verbose_name_plural = _('Entries')
-        ordering = ['-created_at',]
+        ordering = ['-created_at', ]
 
     def __str__(self):
         return self.title
@@ -49,7 +47,8 @@ class Entry(models.Model):
 
         try:
             # maybe it's not a good assumption, that never will be post with same created_at value
-            self._next_post = Entry.objects.published().filter(created_at__gt=self.created_at).order_by('created_at')[0]
+            self._next_post = Entry.objects.published() \
+                .filter(created_at__gt=self.created_at).order_by('created_at')[0]
         except (Entry.DoesNotExist, IndexError):
             self._next_post = None
 
@@ -61,7 +60,8 @@ class Entry(models.Model):
 
         try:
             # maybe it's not a good assumption, that never will be post with same created_at value
-            self._prev_post = Entry.objects.published().filter(created_at__lt=self.created_at).order_by('-created_at')[0]
+            self._prev_post = Entry.objects.published() \
+                .filter(created_at__lt=self.created_at).order_by('-created_at')[0]
         except (Entry.DoesNotExist, IndexError):
             self._prev_post = None
 

@@ -1,9 +1,8 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
 
 from boski.decorators import with_template
-
 from .models import Entry
 
 

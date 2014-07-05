@@ -1,9 +1,8 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 from datetime import datetime
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
 from taggit.managers import TaggableManager
 from uuslug import uuslug as slugify
 
@@ -44,18 +43,21 @@ class Company(models.Model):
         super(Company, self).save(**kwargs)
 
 
+default_photo_kwargs = {'upload_to': 'upload/%Y/%m', 'max_length': 255, 'blank': True, 'null': True}
+
+
 class Entry(models.Model):
     """ Entries in portfolio """
     name = models.CharField(_('Name'), max_length=255, blank=False, null=False)
     slug = models.SlugField(_('SLUG'), max_length=255, unique=True)
 
-    main_photo = models.ImageField(_('Main photo'), upload_to='upload/%Y/%m', max_length=255, blank=True, null=True)
-    photo_1 = models.ImageField(_('Additional photo #1'), upload_to='upload/%Y/%m', max_length=255, blank=True, null=True)
-    photo_2 = models.ImageField(_('Additional photo #2'), upload_to='upload/%Y/%m', max_length=255, blank=True, null=True)
-    photo_3 = models.ImageField(_('Additional photo #3'), upload_to='upload/%Y/%m', max_length=255, blank=True, null=True)
-    photo_4 = models.ImageField(_('Additional photo #4'), upload_to='upload/%Y/%m', max_length=255, blank=True, null=True)
-    photo_5 = models.ImageField(_('Additional photo #5'), upload_to='upload/%Y/%m', max_length=255, blank=True, null=True)
-    photo_6 = models.ImageField(_('Additional photo #6'), upload_to='upload/%Y/%m', max_length=255, blank=True, null=True)
+    main_photo = models.ImageField(_('Main photo'), **default_photo_kwargs)
+    photo_1 = models.ImageField(_('Additional photo #1'), **default_photo_kwargs)
+    photo_2 = models.ImageField(_('Additional photo #2'), **default_photo_kwargs)
+    photo_3 = models.ImageField(_('Additional photo #3'), **default_photo_kwargs)
+    photo_4 = models.ImageField(_('Additional photo #4'), **default_photo_kwargs)
+    photo_5 = models.ImageField(_('Additional photo #5'), **default_photo_kwargs)
+    photo_6 = models.ImageField(_('Additional photo #6'), **default_photo_kwargs)
 
     description = models.TextField(_('Description'), blank=False, null=True)
 

@@ -2,6 +2,7 @@
 from django.db.models import Manager
 from datetime import datetime
 
+
 class PublicManager(Manager):
     """Returns published posts that are not in the future and are not deleted."""
 

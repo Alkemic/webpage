@@ -1,10 +1,11 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 from django.conf.urls import *
 from .views import List, Update, Create, Delete, CompanyList, CompanyCreate, CompanyUpdate, CompanyDelete
 
 __author__ = 'Daniel Alkemic Czuba <dc@danielczuba.pl>'
 
-urlpatterns = patterns('module.portfolio.cms.views',
+urlpatterns = patterns(
+    'module.portfolio.cms.views',
     url(r'company/create/$', CompanyCreate.as_view(), name='company-create'),
     url(r'company/update/(?P<pk>[\d]+)/$', CompanyUpdate.as_view(), name='company-update'),
     url(r'company/delete/(?P<pk>[\d]+)/$', CompanyDelete.as_view(), name='company-delete'),

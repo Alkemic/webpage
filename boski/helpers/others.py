@@ -5,7 +5,6 @@ import cStringIO
 from PIL import Image
 from django.core.files.base import ContentFile
 
-
 __author__ = 'Daniel Alkemic Czuba <dc@danielczuba.pl>'
 
 
@@ -155,4 +154,3 @@ def generate_thumb(img, thumb_size, output_format, crop=False, upscale=False):
 
     image2.save(io, output_format)
     return ContentFile(io.getvalue())
-

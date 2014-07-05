@@ -3,7 +3,6 @@ from django.db.models import Manager
 
 
 class PublishedManager(Manager):
-
     def published(self, pk=False, slug=False):
         """ Zwraca opublikowane strony (te ze statusem 0) """
         if slug and pk:
@@ -24,4 +23,3 @@ class PublishedManager(Manager):
     def non_deleted(self):
         """ Returns non deleted entries """
         return self.get_query_set().filter(deleted_at__isnull=True)
-
