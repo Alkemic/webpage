@@ -7,8 +7,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from boski.views.crud import ListView, CreateView, UpdateView, DeleteView
 from boski.mixins import LoginRequiredMixin
-
 from module.blog.models import Entry
+
 
 __author__ = 'Daniel Alkemic Czuba <dc@danielczuba.pl>'
 
@@ -39,7 +39,7 @@ class List(LoginRequiredMixin, ListView):
 
     def get_fields_name(self):
         fields_name = super(List, self).get_fields_name()
-        return fields_name+['is_active', 'slug']
+        return fields_name + ['is_active', 'slug']
 
     orderingColumns = {'id', 'title', 'created_at'}
 

@@ -1,4 +1,4 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 import urllib
 import hashlib
 from datetime import datetime, timedelta, date
@@ -7,12 +7,10 @@ import os
 from django import template
 from django.conf import settings
 from django.utils import timezone
-from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse, resolve
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-
 from postmarkup.parser import create, pygments_available, SimpleTag, strip_bbcode as postmarkup_strip_bbcode
 
 from boski.helpers import generate_thumb
@@ -37,6 +35,8 @@ def rm_kurwa(text):
     kurwa_regex = '(?i)chuj|chuje|chuji|chujki|kurwa|kurwy|dziwka|dziwki|dziwko|kutas|kutasy|kutasie|suka|suki|suko|' \
                   'suczko|skurwiel|skurwielu|skurwiele|skurwieli|cwel|cwele|cweli|peneras|chwdp|hwdp'
     return '#$%^&*'.join(re.split(kurwa_regex, text))
+
+
 rm_kurwa.is_save = True
 
 
@@ -49,6 +49,8 @@ def bbcode(value):
 
     """
     return mark_safe(render_bbcode(value, paragraphs=True))
+
+
 bbcode.is_save = True
 
 
@@ -61,12 +63,17 @@ def strip_bbcode(value):
 
     """
     return mark_safe(postmarkup_strip_bbcode(value))
+
+
 strip_bbcode.is_save = True
 
 
 @register.filter(name='dir')
-def do_dir(value):
-    return dir(value)
+def do_dir(obj):
+    """ Filter that returns dir from object """
+    return dir(obj)
+
+
 do_dir.is_save = True
 
 
@@ -88,7 +95,7 @@ def show_sexy_date(date):
         1: _('of january'), 2: _('of february'), 3: _('of march'), 4: _('of april'), 5: _('of may'), 6: ('of june'),
         7: _('of july'), 8: _('of august'), 9: _('of september'), 10: _('of october'), 11: _('of november'),
         12: _('of ecember'),
-        }
+    }
     now = datetime.now()
     if date.tzinfo is not None:
         default_timezone = timezone.get_default_timezone()
@@ -161,15 +168,14 @@ def url_namespace(request, name, params_string=''):
 
 @register.filter
 def prepend_namespace(value, request):
-    """ Build
-    """
+    """ Prepends a namespace to given value """
     namespace = resolve(request.META['PATH_INFO']).namespace
     name = '%s:%s' % (namespace, value)
 
     return name
 
 
-"""
+_t = """
 namefile: usertags.py
 You would need a template nest for every method, for example to online_users.
 /templates/tag/online_users.html
@@ -284,9 +290,9 @@ def fb_thumbnail(img, args=None):
     if not os.path.exists("%s/%s" % (img.path.replace(img.filename, ''), thumb_name)):
         try:
             thumb = generate_thumb(open(img.path), (height, width), 'jpg', crop)
-        except IOError: # brak pliku
+        except IOError:  # brak pliku
             return ''
-        except Exception: # lol
+        except Exception:  # lol
             return ''
         fh = open("%s/%s" % (img.path.replace(img.filename, ''), thumb_name), 'w')
         thumb.seek(0)
@@ -297,6 +303,7 @@ def fb_thumbnail(img, args=None):
 
 
 def create_dir_hash_structure(hash_name, under_path, blocs=4):
+    """ Create dir structure from given name """
     created_part = ''
 
     for i in xrange(0, blocs):
@@ -400,11 +407,13 @@ def thumbnail_c(img_url, height=200, width=120, crop=True):
 
 @register.filter
 def match_url(url, match_with):
+    """ Checks if match_with starts with given url """
     return url.startswith(match_with)
 
 
 @register.filter
 def exact_match_url(url, match_with):
+    """ Checks if given url is identical to match_with """
     return url == match_with
 
 
@@ -423,6 +432,9 @@ def try_to_include(context, template_name):
 
 @register.filter
 def get_default_path(value, request):
+    """
+    Returns default path for templates inclusion
+    """
     namespace = resolve(request.META['PATH_INFO']).namespace
     if ':' in namespace:
         namespace = '/'.join(namespace.split(':'))
@@ -462,5 +474,3 @@ def within_time(datetime_obj, value):
         return datetime.now() < datetime_obj + timedelta(seconds=value)
     else:
         raise Exception(_('Incorrect suffix supplied'))
-
-

@@ -1,10 +1,9 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
 from simplejson import dumps
-from django.utils.translation import ugettext_lazy as _
 
 
 class ActionLog(models.Model):
@@ -18,13 +17,10 @@ class ActionLog(models.Model):
         - mark_delete
         - mark
     """
-    user = models.ForeignKey(User, null=True, blank=True) #, related_name='login_log')
-    # username = models.CharField('Nazwa użytkownika', max_length=255, null=True, blank=True)
-    # password = models.BooleanField('Czy używał hasła')
+    user = models.ForeignKey(User, null=True, blank=True)
     created_at = models.DateTimeField('Data logowania', default=datetime.now())
     ip = models.IPAddressField('IP')
     ua = models.CharField('User agent', max_length=255)
-    # success = models.BooleanField('Czy logowanie udane')
     post_data = models.TextField('Dane wysłane POSTem')
     get_data = models.TextField('Dane wysłane GETem')
     session_data = models.TextField('Dane zapisane w sesji')
@@ -85,4 +81,3 @@ class ActionLog(models.Model):
     def mark(request):
         """ Simply mark """
         ActionLog.log(request, ActionLog.MARK, 'MARK')
-

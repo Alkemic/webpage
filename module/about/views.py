@@ -1,18 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.contrib import messages
 from django.core.mail.message import EmailMessage
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
-from django.core.mail import send_mail
 
 from dc.settings import ADMINS
-
 from boski.mixins import BreadcrumbsMixin
-
 from module.static_page.models import Entry
-from .models import Mail
 from .forms import MailForm
 
 
@@ -51,9 +46,13 @@ class Index(BreadcrumbsMixin, FormView):
 
         # sending email
         try:
-            email = EmailMessage(mail_entry.subject, mail_entry.content, '%s <%s>' % (mail_entry.author, mail_entry.email),
+            email = EmailMessage(
+                mail_entry.subject,
+                mail_entry.content,
+                '%s <%s>' % (mail_entry.author, mail_entry.email),
                 [a[1] for a in ADMINS],
-                headers={'Reply-To': '%s <%s>' % (mail_entry.author, mail_entry.email)})
+                headers={'Reply-To': '%s <%s>' % (mail_entry.author, mail_entry.email)}
+            )
             email.send(fail_silently=False)
         except:
             messages.error(self.request, _('An error occurred during sending email'))

@@ -1,11 +1,18 @@
-import urllib, hashlib
+# -*- coding:utf-8 -*-
+import urllib
+import hashlib
+
 from django import template
+
+__author__ = 'Daniel Alkemic Czuba <dc@danielczuba.pl>'
+
 
 register = template.Library()
 
+
 @register.simple_tag
 def gravatar(email, size=48):
-    """
+    u"""
     (Ukradzione stąd: http://www.djangosnippets.org/snippets/1124/)
     Simply gets the Gravatar for the commenter. There is no rating or
     custom "not found" icon yet. Used with the Django comments.

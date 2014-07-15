@@ -15,13 +15,18 @@
 # )
 #
 
+__author__ = 'Daniel Alkemic Czuba <dc@danielczuba.pl>'
+
 from django.template import Library
 
 register = Library()
 
+
 @register.simple_tag
 def draw_form(form, fieldsets=False):
-
+    """
+    Helps with generating forms
+    """
     def get_fields_html(fields, f):
         fields_html = []
         append = fields_html.append
@@ -38,8 +43,8 @@ def draw_form(form, fieldsets=False):
                 errors = str(f[field_name].errors)
                 cls.append('error')
             cls = ' class="%s"' % " ".join(cls)
-            #append('<li%s>%s<label for="%s">%s:</label> %s %s</li>' % (cls, errors, field_name, field.label, str(field), help_text))
-            append('<li%s>%s<label for="%s">%s:</label> %s %s</li>' % (cls, errors, field_name, unicode(field.label), unicode(field), help_text))
+            append('<li%s>%s<label for="%s">%s:</label> %s %s</li>' % (
+                cls, errors, field_name, unicode(field.label), unicode(field), help_text))
         return "".join(fields_html)
 
     form_html = []

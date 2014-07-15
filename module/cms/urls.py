@@ -3,7 +3,8 @@ from django.conf.urls import *
 from .views import IndexView, Log, Login, Logout
 
 
-urlpatterns = patterns('module.cms.views',
+urlpatterns = patterns(
+    'module.cms.views',
     (r'^blog/', include('module.blog.cms.urls', namespace='blog')),
     (r'^static_page/', include('module.static_page.cms.urls', namespace='static_page')),
     (r'^portfolio/', include('module.portfolio.cms.urls', namespace='portfolio')),

@@ -1,4 +1,4 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
@@ -6,13 +6,15 @@ from django.views.generic.base import RedirectView
 
 from boski.views.base import TemplateTextPlainView
 
+
 admin.autodiscover()
 
 index_entry = url(r'^$', TemplateTextPlainView.as_view(template_name='wip.txt'), name='index') \
     if getattr(settings, 'IS_WIP', False) \
     else url(r'^$', RedirectView.as_view(pattern_name='blog:index'), name='index')
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^robots\.txt$', TemplateTextPlainView.as_view(template_name='robots.txt')),
     index_entry,
     (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),

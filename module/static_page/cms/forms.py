@@ -1,4 +1,4 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 from django import forms
 from django.utils.encoding import force_text, smart_text
 from django.utils.translation import ugettext_lazy as _, string_concat

@@ -7,7 +7,8 @@ import datetime
 from math import ceil
 
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic.edit import CreateView as DjangoCreateView, UpdateView as DjangoUpdateView, DeleteView as DjangoDeleteView
+from django.views.generic.edit import CreateView as DjangoCreateView, UpdateView as DjangoUpdateView, \
+    DeleteView as DjangoDeleteView
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic import View
 from django.forms.models import model_to_dict
@@ -17,7 +18,8 @@ from django.core.urlresolvers import reverse, resolve
 from django.contrib import messages
 
 from boski.helpers import get_params
-from boski.mixins import LoginRequiredMixin, JSONResponseMixin, BreadcrumbsMixin
+from boski.mixins import JSONResponseMixin, BreadcrumbsMixin
+
 
 __author__ = 'Daniel Alkemic Czuba <dc@danielczuba.pl>'
 
@@ -217,7 +219,7 @@ class CreateView(BreadcrumbsMixin, DjangoCreateView):
     actions = ListView.actions
     object = None
 
-    name =_('Create entry')
+    name = _('Create entry')
 
     def post(self, request, *args, **kwargs):
         form_class = self.get_form_class()

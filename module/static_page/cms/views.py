@@ -8,7 +8,6 @@ from django.utils.translation import ugettext_lazy as _
 from boski.mixins import LoginRequiredMixin
 from boski.views.crud import ListView, CreateView
 from boski.decorators import with_template
-
 from module.static_page.models import Entry
 from module.static_page.cms.forms import EntryForm
 
@@ -42,7 +41,7 @@ class List(ListView, LoginRequiredMixin):
 
     def get_fields_name(self):
         fields_name = super(List, self).get_fields_name()
-        return fields_name+['activated_at', 'slug']
+        return fields_name + ['activated_at', 'slug']
 
 
 class Create(LoginRequiredMixin, CreateView):
@@ -64,6 +63,7 @@ class Update(LoginRequiredMixin, CreateView):
         return ({'name': _('Static page'), 'url': 'cms:static_page:index'},
                 {'name': self.name, 'url': 'cms:static_page:update', 'pk': self.get_object().pk},)
 
+
 @login_required
 @with_template('crud/create.html')
 def create(request):
@@ -81,7 +81,7 @@ def create(request):
     request.breadcrumbs = ({'name': _('Static page'), 'url': 'cms:static_page:index'},
                            {'name': name, 'url': 'cms:static_page:create'},)
 
-    actions = {'create': 'create','update': 'update','delete': 'delete','index': 'index',}
+    actions = {'create': 'create', 'update': 'update', 'delete': 'delete', 'index': 'index', }
 
     return locals()
 
@@ -108,7 +108,7 @@ def update(request, pk):
     request.breadcrumbs = ({'name': _('Static page'), 'url': 'cms:static_page:index'},
                            {'name': name, 'url': 'cms:static_page:update', 'pk': entry.pk},)
 
-    actions = {'create': 'create','update': 'update','delete': 'delete','index': 'index',}
+    actions = {'create': 'create', 'update': 'update', 'delete': 'delete', 'index': 'index', }
 
     return dict(locals().items() + {'object': entry}.items())
 
@@ -127,7 +127,7 @@ def delete(request, pk):
     request.breadcrumbs = ({'name': _('Static page'), 'url': 'cms:static_page:index'},
                            {'name': name, 'url': 'cms:static_page:delete', 'pk': entry.pk},)
 
-    actions = {'create': 'create','update': 'update','delete': 'delete','index': 'index',}
+    actions = {'create': 'create', 'update': 'update', 'delete': 'delete', 'index': 'index', }
 
     return dict(locals().items() + {'object': entry}.items())
 
@@ -143,5 +143,3 @@ def activate(request, pk):
         messages.error(request, _('Error occurred during saving'))
 
     return HttpResponseRedirect(reverse('cms:static_page:index'))
-
-

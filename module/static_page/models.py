@@ -1,12 +1,10 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 from datetime import datetime
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
 from taggit.managers import TaggableManager
 from postmarkup import render_bbcode
-
 from uuslug import uuslug as slugify
 
 from module.static_page.managers import PublishedManager
@@ -17,7 +15,8 @@ class Entry(models.Model):
     slug = models.CharField('Slug', max_length=255, unique=True, db_index=True, blank=True,
                             help_text='Jeśli puste zostanie wygenerowany na podstawie tytułu. /p/&lt;slug&gt;.html')
     content = models.TextField('Treść',
-                               help_text='Można korzystać z formatowania BBCode, pełna lista znaczników znajduje się <a href="/p/bbcode.html">tutaj</a>.')
+                               help_text='Można korzystać z formatowania BBCode, pełna lista znaczników znajduje się '
+                                         '<a href="/p/bbcode.html">tutaj</a>.')
     content_r = models.TextField('Wyrenderowana treść.', blank=True)
 
     created_at = models.DateTimeField('Data utworzenia', default=datetime.now())
@@ -66,4 +65,3 @@ class Entry(models.Model):
             self.created_at = datetime.now()
 
         super(Entry, self).save(force_insert, force_update, using, update_fields)
-

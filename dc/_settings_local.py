@@ -1,4 +1,4 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 Installation specific settings.
 Copy this file to settings_local.py, and fill up.

@@ -20,7 +20,7 @@ class Mail(models.Model):
     class Meta:
         verbose_name = _('Mail')
         verbose_name_plural = _('Mails')
-        ordering = ['-created_at',]
+        ordering = ['-created_at', ]
 
     def __str__(self):
         return "%s (%s)" % (self.author, self.email)

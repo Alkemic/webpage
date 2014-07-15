@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+
 from django import http
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -9,9 +10,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from boski.views.crud import ListView, CreateView, UpdateView, DeleteView
 from boski.mixins import LoginRequiredMixin
-
 from ..models import Entry, Company
 from .forms import EntryForm, CompanyForm
+
 
 __author__ = 'Daniel Alkemic Czuba <dc@danielczuba.pl>'
 
@@ -114,11 +115,6 @@ class CompanyList(LoginRequiredMixin, ListView):
         ('action', _('Actions'))
     )
 
-    # filters = (
-    #     ('created_at__gte', {'label': _('Created from'), 'type': 'text', 'class': 'calendar'}),
-    #     ('created_at__lte', {'label': _('To'), 'type': 'text', 'class': 'calendar'})
-    # )
-
     mapColumns = {
         'id': '_displayAsIs',
         'name': '_displayEditLink',
@@ -158,7 +154,7 @@ class CompanyUpdate(LoginRequiredMixin, UpdateView):
     @property
     def breadcrumbs(self):
         return {'name': _('Portfolio'), 'url': 'cms:portfolio:index'}, \
-               {'name': _('Company'), 'url': 'cms:portfolio:company-index'},\
+               {'name': _('Company'), 'url': 'cms:portfolio:company-index'}, \
                {'name': self.name, 'url': 'cms:portfolio:company-update', 'pk': self.get_object().pk}
 
 
@@ -169,7 +165,7 @@ class CompanyDelete(LoginRequiredMixin, DeleteView):
     @property
     def breadcrumbs(self):
         return {'name': _('Portfolio'), 'url': 'cms:portfolio:index'}, \
-               {'name': _('Company'), 'url': 'cms:portfolio:company-index'},\
+               {'name': _('Company'), 'url': 'cms:portfolio:company-index'}, \
                {'name': self.name, 'url': 'cms:portfolio:company-delete', 'pk': self.get_object().pk}
 
     def delete(self, request, *args, **kwargs):
