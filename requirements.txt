@@ -1,5 +1,5 @@
 Django
-PIL
+Pillow
 argparse
 django-bootstrap3
 django-debug-panel
