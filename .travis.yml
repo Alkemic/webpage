@@ -1,0 +1,19 @@
+language: python
+
+notifications:
+  email:
+    - alkemic7+travis-ci-notifications@gmail.com
+
+python:
+  - "2.6"
+  - "2.7"
+
+install:
+  - pip install -r requirements.txt
+
+before_script:
+  - sqlite3 --version
+  - python -c "import sqlite3; print sqlite3.version"
+
+script:
+  - python manage.py test
