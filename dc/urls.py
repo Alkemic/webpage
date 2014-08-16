@@ -9,18 +9,49 @@ from boski.views.base import TemplateTextPlainView
 
 admin.autodiscover()
 
-index_entry = url(r'^$', TemplateTextPlainView.as_view(template_name='wip.txt'), name='index') \
-    if getattr(settings, 'IS_WIP', False) \
-    else url(r'^$', RedirectView.as_view(pattern_name='blog:index'), name='index')
+if getattr(settings, 'IS_WIP', False):
+    index_entry = url(
+        r'^$',
+        TemplateTextPlainView.as_view(template_name='wip.txt'),
+        name='index',
+    )
+else:
+    index_entry = url(
+        r'^$',
+        RedirectView.as_view(pattern_name='blog:index'),
+        name='index',
+    )
 
 urlpatterns = patterns(
     '',
-    url(r'^robots\.txt$', TemplateTextPlainView.as_view(template_name='robots.txt')),
+    url(
+        r'^robots\.txt$',
+        TemplateTextPlainView.as_view(template_name='robots.txt')
+    ),
     index_entry,
-    (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
-    (r'^about/', include('module.about.urls', namespace='about')),
-    (r'^cms/', include('module.cms.urls', namespace='cms')),
-    (r'^blog/', include('module.blog.urls', namespace='blog')),
-    (r'^portfolio/', include('module.portfolio.urls', namespace='portfolio')),
-    (r'^', include('module.static_page.urls', namespace='static_page')),
+    (
+        r'^media/(?P<path>.*)$',
+        'django.views.static.serve',
+        {'document_root': settings.MEDIA_ROOT}
+    ),
+    (
+        r'^about/',
+        include('module.about.urls', namespace='about')
+    ),
+    (
+        r'^cms/',
+        include('module.cms.urls', namespace='cms')
+    ),
+    (
+        r'^blog/',
+        include('module.blog.urls', namespace='blog')
+    ),
+    (
+        r'^portfolio/',
+        include('module.portfolio.urls', namespace='portfolio')
+    ),
+    (
+        r'^',
+        include('module.static_page.urls', namespace='static_page')
+    ),
 )

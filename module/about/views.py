@@ -12,12 +12,23 @@ from .forms import MailForm
 
 
 class Index(BreadcrumbsMixin, FormView):
+    """
+    Displays about page (from static_page) and contact form
+    """
+
     template_name = 'about/index.html'
     breadcrumbs = ((_('About'), reverse_lazy('about:index')),)
     form_class = MailForm
     success_url = reverse_lazy('about:index')
 
     def get_context_data(self, **kwargs):
+        """
+        Injects about page
+        :param kwargs:
+        :type kwargs:
+        :return:
+        :rtype:
+        """
         context = super(Index, self).get_context_data(**kwargs)
 
         about_page, created = Entry.objects.get_or_create(slug='about')
@@ -51,11 +62,19 @@ class Index(BreadcrumbsMixin, FormView):
                 mail_entry.content,
                 '%s <%s>' % (mail_entry.author, mail_entry.email),
                 [a[1] for a in ADMINS],
-                headers={'Reply-To': '%s <%s>' % (mail_entry.author, mail_entry.email)}
+                headers={
+                    'Reply-To': '%s <%s>' % (
+                        mail_entry.author,
+                        mail_entry.email,
+                    ),
+                }
             )
             email.send(fail_silently=False)
         except:
-            messages.error(self.request, _('An error occurred during sending email'))
+            messages.error(
+                self.request,
+                _('An error occurred during sending email'),
+            )
         else:
             messages.success(self.request, _('Mail has been sent'))
 

@@ -9,6 +9,9 @@ from module.blog.models import Entry
 
 
 class BlogList(BreadcrumbsMixin, ListView):
+    """
+    Displays index page of blog
+    """
     template_name = 'blog/index.html'
     context_object_name = 'list'
     queryset = Entry.objects.published()
@@ -20,6 +23,9 @@ class BlogList(BreadcrumbsMixin, ListView):
 
 
 class TagBlogList(BreadcrumbsMixin, ListView):
+    """
+    Displays entries tag by given tag
+    """
     template_name = 'blog/index.html'
     context_object_name = 'list'
     paginate_by = 10
@@ -27,13 +33,19 @@ class TagBlogList(BreadcrumbsMixin, ListView):
     @property
     def breadcrumbs(self):
         return (_('Blog'), reverse_lazy('blog:index')), \
-               (_('Tag: %s') % self.kwargs['tag'], reverse_lazy('blog:tag', args=[self.kwargs['tag']])),
+               (
+                   _('Tag: %s') % self.kwargs['tag'],
+                   reverse_lazy('blog:tag', args=[self.kwargs['tag']])
+               ),
 
     def get_queryset(self):
         return Entry.objects.published().filter(tags__name=self.kwargs['tag'])
 
 
 class EntryView(BreadcrumbsMixin, DetailView):
+    """
+    Display single entry
+    """
     template_name = 'blog/entry.html'
     context_object_name = 'entry'
     queryset = Entry.objects.published()

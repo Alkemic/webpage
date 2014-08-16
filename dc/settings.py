@@ -87,6 +87,10 @@ AUTHENTICATION_BACKENDS = (
     'module.cms.backends.ModelBackendByEmail',
 )
 
+FIXTURE_DIRS = (
+    os.path.join(PROJECT_ROOT, 'data/fixtures'),
+)
+
 try:
     from settings_local import *
 

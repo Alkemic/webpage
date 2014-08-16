@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from uuslug import uuslug as slugify
@@ -11,19 +10,37 @@ from module.blog.managers import *
 class Entry(models.Model):
     """ Model with blog entries """
     title = models.CharField(_('Title'), max_length=255)
-    slug = models.SlugField(_('SLUG'), max_length=255, blank=True, null=True, unique=True)
+    slug = models.SlugField(
+        _('SLUG'),
+        max_length=255,
+        blank=True,
+        null=True,
+        unique=True,
+    )
     teaser = models.TextField(_('Teaser'), blank=True, null=True)
-    teaser_r = models.TextField(_('Rendered teaser'), blank=True, null=True)
+    teaser_r = models.TextField(
+        _('Rendered teaser'),
+        blank=True,
+        null=True,
+    )
     content = models.TextField(_('Content'))
     content_r = models.TextField(_('Rendered content'), blank=True, null=True)
 
     is_active = models.BooleanField(_('Is active?'), default=False)
 
     created_at = models.DateTimeField(_('Date created'), default=datetime.now())
-    modified_at = models.DateTimeField(_('Date modified'), blank=True, null=True)
+    modified_at = models.DateTimeField(
+        _('Date modified'),
+        blank=True,
+        null=True,
+    )
     deleted_at = models.DateTimeField(_('Date deleted'), blank=True, null=True)
 
-    tags = TaggableManager(_('Tags'), blank=True, related_name='has_blog_entries')
+    tags = TaggableManager(
+        _('Tags'),
+        blank=True,
+        related_name='has_blog_entries',
+    )
 
     objects = PublicManager()
 
@@ -46,9 +63,11 @@ class Entry(models.Model):
             return self._next_post
 
         try:
-            # maybe it's not a good assumption, that never will be post with same created_at value
+            # maybe it's not a good assumption, that never will be post with
+            # same created_at value
             self._next_post = Entry.objects.published() \
-                .filter(created_at__gt=self.created_at).order_by('created_at')[0]
+                .filter(created_at__gt=self.created_at) \
+                .order_by('created_at')[0]
         except (Entry.DoesNotExist, IndexError):
             self._next_post = None
 
@@ -59,9 +78,11 @@ class Entry(models.Model):
             return self._prev_post
 
         try:
-            # maybe it's not a good assumption, that never will be post with same created_at value
+            # maybe it's not a good assumption, that never will be post with
+            # same created_at value
             self._prev_post = Entry.objects.published() \
-                .filter(created_at__lt=self.created_at).order_by('-created_at')[0]
+                .filter(created_at__lt=self.created_at) \
+                .order_by('-created_at')[0]
         except (Entry.DoesNotExist, IndexError):
             self._prev_post = None
 

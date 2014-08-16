@@ -9,11 +9,21 @@ from .models import Entry, Company
 
 @with_template
 def index(request):
-    entries = Entry.objects.filter(deleted_at__isnull=True).order_by('company', '-from_date')
+    """
+    List all available
+    :param request: A request
+    :type request: django.http.request.HttpRequest
+    :return: Data to render
+    :rtype: dict
+    """
+    entries = Entry.objects.filter(deleted_at__isnull=True) \
+        .order_by('company', '-from_date')
     """ :type : list of Entry """
     companies = Company.objects.all()
     """ :type : list of Company """
 
-    request.breadcrumbs = ((_('Portfolio'), reverse('portfolio:index')),)
+    request.breadcrumbs = (
+        (_('Portfolio'), reverse('portfolio:index')),
+    )
 
     return locals()
