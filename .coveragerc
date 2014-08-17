@@ -1,0 +1,6 @@
+[run]
+include =
+    dc/*
+    module/*
+omit =
+    */test*
