@@ -23,7 +23,7 @@ class Mail(models.Model):
         ordering = ['-created_at', ]
 
     def __str__(self):
-        return "%s (%s)" % (self.author, self.email)
+        return u"%s (%s)" % (self.author, self.email)
 
     def __unicode__(self):
-        return "%s (%s)" % (self.author, self.email)
+        return u"%s (%s)" % (self.author, self.email)

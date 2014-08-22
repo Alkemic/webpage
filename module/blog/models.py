@@ -94,7 +94,7 @@ class Entry(models.Model):
 
     @models.permalink
     def get_cms_url(self):
-        return 'blog:cms:update', (), {'slug': self.slug}
+        return 'cms:blog:update', (), {'pk': self.id}
 
     def save(self, **kwargs):
         if self.pk:

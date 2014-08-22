@@ -6,21 +6,9 @@ from django.views.generic.base import RedirectView
 
 from boski.views.base import TemplateTextPlainView
 
+from module.web.views import IndexView
 
 admin.autodiscover()
-
-if getattr(settings, 'IS_WIP', False):
-    index_entry = url(
-        r'^$',
-        TemplateTextPlainView.as_view(template_name='wip.txt'),
-        name='index',
-    )
-else:
-    index_entry = url(
-        r'^$',
-        RedirectView.as_view(pattern_name='blog:index'),
-        name='index',
-    )
 
 urlpatterns = patterns(
     '',
@@ -28,7 +16,11 @@ urlpatterns = patterns(
         r'^robots\.txt$',
         TemplateTextPlainView.as_view(template_name='robots.txt')
     ),
-    index_entry,
+    url(
+        r'^$',
+        IndexView.as_view(),
+        name='index',
+    ),
     (
         r'^media/(?P<path>.*)$',
         'django.views.static.serve',
