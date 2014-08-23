@@ -5,7 +5,6 @@ notifications:
     - alkemic7+travis-ci-notifications@gmail.com
 
 python:
-  - "2.6"
   - "2.7"
 
 install:
@@ -15,9 +14,7 @@ install:
 
 before_script:
   - sqlite3 --version
-  - pip install pysqlite
-  - python -c "import sqlite3; print sqlite3.version"
-  - python -c "import django; print django.get_version()"
+  - cp dc/_settings_local.py dc/settings_local.py
 
 script:
   - coverage run manage.py test
