@@ -50,6 +50,15 @@ class EntryView(BreadcrumbsMixin, DetailView):
     context_object_name = 'entry'
     queryset = Entry.objects.published()
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_staff or request.user.is_superuser:
+            self.queryset = Entry.objects.all()
+        else:
+            self.queryset = Entry.objects.published()
+
+        return super(EntryView, self).dispatch(request, *args, **kwargs)
+
+
     @property
     def breadcrumbs(self):
         if not hasattr(self, 'object') or self.object is None:
