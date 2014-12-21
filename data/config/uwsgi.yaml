@@ -1,0 +1,9 @@
+uwsgi:
+  socket: 127.0.0.1:3031 # on which IP and port should be uwsgi running
+  master: 1
+  module: django.core.handlers.wsgi:WSGIHandler()
+  workers: 4
+  pythonpath: /home/alkemic/webpage
+  env: DJANGO_SETTINGS_MODULE=dc.settings
+  home: /home/alkemic/webpage/virtualenv
+  harakiri: 60
