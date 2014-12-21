@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from smtplib import SMTPException
+
 from django.contrib import messages
 from django.core.mail.message import EmailMessage
 from django.core.urlresolvers import reverse_lazy
@@ -70,11 +72,13 @@ class Index(BreadcrumbsMixin, FormView):
                 }
             )
             email.send(fail_silently=False)
-        except:
+        except SMTPException:
             messages.error(
                 self.request,
                 _('An error occurred during sending email'),
             )
+
+            return super(Index, self).form_invalid(form)
         else:
             messages.success(self.request, _('Mail has been sent'))
 
