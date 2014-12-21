@@ -19,9 +19,6 @@ class NoIndexRedirecTestCase(TestCase):
 
     def test_index_redirection(self):
         response = self.client.get('/')
-        # print response
-        # print response.content
-        # print dir(response)
         self.assertEqual(response.status_code, 200)
 
         with open("%s/templates/wip.txt" % PROJECT_ROOT) as fh:

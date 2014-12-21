@@ -98,13 +98,10 @@ def generate_thumb(img, thumb_size, output_format, crop=False, upscale=False):
     if upscale:
         src_width, src_height = image.size
         if src_height < max_height and src_width < max_width:
-            print 'src_height < max_height and src_width < max_width'
             pass
         elif src_height < max_height:
-            print 'src_height < max_height:'
             image.resize((max_width, int(float(src_width * max_height) / float(max_width))), Image.CUBIC)
         elif src_width < max_width:
-            print 'src_width < max_width:'
             image.resize((int(float(src_height * max_width) / float(max_height)), max_height), Image.CUBIC)
 
             # If you want to generate a square thumbnail

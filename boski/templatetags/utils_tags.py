@@ -230,8 +230,7 @@ def thumbnail(img_url, height=200, width=120, crop=True):
         try:
             thumb = generate_thumb(open("%s/%s" % (img.folder, img.filename)), (height, width), 'jpg', crop)
         except Exception:
-            # import traceback
-            # traceback.print_exc()
+            # todo: log this exception
             return ''
 
         fh = open("%s/%s" % (img.folder, thumb_name), 'w')

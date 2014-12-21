@@ -54,7 +54,6 @@ def bbcode(value):
     By using the postmark lib from:
     @see: http://code.google.com/p/postmarkup/
     """
-    print value
     return mark_safe(render_bbcode(value))
 
 

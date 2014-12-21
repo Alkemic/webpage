@@ -34,7 +34,6 @@ def delete_view_cache(url=None, pattern=None, args=None, kwargs=None, query_stri
     key = get_cache_key(request, key_prefix=key_prefix)
 
     if key and cache.get(key):
-        print key
         cache.set(key, None, 0)
         return True
 
