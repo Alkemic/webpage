@@ -15,4 +15,4 @@ class PublishedManager(Manager):
 
     def non_deleted(self):
         """ Returns non deleted entries """
-        return self.get_query_set().filter(deleted_at__isnull=True)
+        return self.get_queryset().filter(deleted_at__isnull=True)

@@ -8,12 +8,12 @@ class PublicManager(Manager):
 
     def non_deleted(self, slug=False):
         if slug:
-            return self.get_query_set().filter(deleted_at__isnull=True).get(slug=slug)
+            return self.get_queryset().filter(deleted_at__isnull=True).get(slug=slug)
         else:
-            return self.get_query_set().filter(deleted_at__isnull=True)
+            return self.get_queryset().filter(deleted_at__isnull=True)
 
     def deleted(self, slug=False):
         if slug:
-            return self.get_query_set().filter(deleted_at__isnull=False).get(slug=slug)
+            return self.get_queryset().filter(deleted_at__isnull=False).get(slug=slug)
         else:
-            return self.get_query_set().filter(deleted_at__isnull=False)
+            return self.get_queryset().filter(deleted_at__isnull=False)
