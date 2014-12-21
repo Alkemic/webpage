@@ -40,34 +40,6 @@ def rm_kurwa(text):
 rm_kurwa.is_save = True
 
 
-@register.filter
-def bbcode(value):
-    """
-    Generates (X)HTML from string with BBCode "markup".
-    By using the postmark lib from:
-    @see: http://code.google.com/p/postmarkup/
-
-    """
-    return mark_safe(render_bbcode(value, paragraphs=True))
-
-
-bbcode.is_save = True
-
-
-@register.filter
-def strip_bbcode(value):
-    """
-    Strips BBCode tags from a string
-    By using the postmark lib from:
-    @see: http://code.google.com/p/postmarkup/
-
-    """
-    return mark_safe(postmarkup_strip_bbcode(value))
-
-
-strip_bbcode.is_save = True
-
-
 @register.filter(name='dir')
 def do_dir(obj):
     """ Filter that returns dir from object """
