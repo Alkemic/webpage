@@ -1,7 +1,9 @@
 # -*- coding:utf-8 -*-
 import os
 
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+PROJECT_ROOT = BASE_DIR
 PROJECT_NAME = os.path.split(os.path.dirname(os.path.abspath(__file__)))[-1]
 
 DEBUG = True
@@ -12,8 +14,6 @@ ALLOWED_HOSTS = ['127.0.0.1']
 TIME_ZONE = 'Europe/Warsaw'
 
 LANGUAGE_CODE = 'pl-PL'
-
-SITE_ID = 1
 
 USE_I18N = True
 
@@ -27,12 +27,6 @@ LOGIN_REDIRECT_URL = '/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '042feo5$3)#*v1em9@-6n751^8cdgw*_o^3evxuo1sayq=n5e_'
-
-TEMPLATE_LOADERS = (
-    'django.template.loaders.app_directories.Loader',
-    'django.template.loaders.filesystem.Loader',
-    # 'django.template.loaders.eggs.Loader',
-)
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
