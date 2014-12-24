@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from smtplib import SMTPException
+from socket import error
 
 from django.contrib import messages
 from django.core.mail.message import EmailMessage
@@ -72,7 +73,7 @@ class Index(BreadcrumbsMixin, FormView):
                 }
             )
             email.send(fail_silently=False)
-        except SMTPException:
+        except (SMTPException, error):
             messages.error(
                 self.request,
                 _('An error occurred during sending email'),
