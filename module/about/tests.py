@@ -37,8 +37,8 @@ class ViewsTestCase(TestCase):
 
         self.assertInHTML(
             '<div class="alert alert-danger alert-dismissable"><button '
-            'type="button" class="close" data-dismiss="alert" '
-            'aria-hidden="true">&#215;</button>Please check contact form</div>',
+            'type="button" class="close" data-dismiss="alert" aria-hidden='
+            '"true">&#215;</button>Please check contact form</div>',
             response.content
         )
 
@@ -100,7 +100,8 @@ class FailedViewsTestCase(TestCase):
         self.assertInHTML(
             '<div class="alert alert-danger alert-dismissable"><button '
             'type="button" class="close" data-dismiss="alert" '
-            'aria-hidden="true">&#215;</button>An error occurred during sending email</div>',
+            'aria-hidden="true">&#215;</button>An error occurred during '
+            'sending email</div>',
             response.content
         )
 

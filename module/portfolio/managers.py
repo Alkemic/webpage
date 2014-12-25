@@ -4,16 +4,24 @@ from datetime import datetime
 
 
 class PublicManager(Manager):
-    """Returns published posts that are not in the future and are not deleted."""
+    """Basic manager"""
 
     def non_deleted(self, slug=False):
+        """Returns non deleted entries"""
         if slug:
-            return self.get_queryset().filter(deleted_at__isnull=True).get(slug=slug)
+            return self.get_queryset()\
+                .filter(deleted_at__isnull=True)\
+                .get(slug=slug)
         else:
-            return self.get_queryset().filter(deleted_at__isnull=True)
+            return self.get_queryset()\
+                .filter(deleted_at__isnull=True)
 
     def deleted(self, slug=False):
+        """Returns deleted entries"""
         if slug:
-            return self.get_queryset().filter(deleted_at__isnull=False).get(slug=slug)
+            return self.get_queryset()\
+                .filter(deleted_at__isnull=False)\
+                .get(slug=slug)
         else:
-            return self.get_queryset().filter(deleted_at__isnull=False)
+            return self.get_queryset()\
+                .filter(deleted_at__isnull=False)

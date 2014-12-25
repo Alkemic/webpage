@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+"""Models related to static pages"""
 from datetime import datetime
 
 from django.db import models
@@ -12,19 +13,34 @@ from module.static_page.managers import PublishedManager
 
 class Entry(models.Model):
     title = models.CharField('Tytuł', max_length=255)
-    slug = models.CharField('Slug', max_length=255, unique=True, db_index=True, blank=True,
-                            help_text='Jeśli puste zostanie wygenerowany na podstawie tytułu. /p/&lt;slug&gt;.html')
-    content = models.TextField('Treść',
-                               help_text='Można korzystać z formatowania BBCode, pełna lista znaczników znajduje się '
-                                         '<a href="/p/bbcode.html">tutaj</a>.')
+    slug = models.CharField(
+        'Slug',
+        max_length=255,
+        unique=True,
+        db_index=True,
+        blank=True,
+        help_text='Jeśli puste zostanie wygenerowany na podstawie tytułu. '
+                  '/p/&lt;slug&gt;.html',
+    )
+    content = models.TextField(
+        'Treść',
+        help_text='Można korzystać z formatowania BBCode, pełna lista '
+                  'znaczników znajduje się '
+                  '<a href="/p/bbcode.html">tutaj</a>.',
+    )
     content_r = models.TextField('Wyrenderowana treść.', blank=True)
 
-    created_at = models.DateTimeField('Data utworzenia', default=datetime.now())
-    modified_at = models.DateTimeField('Data modyfikacji', default=None, blank=True, null=True)
-    activated_at = models.DateTimeField('Data aktywacji', default=None, blank=True, null=True)
-    deleted_at = models.DateTimeField('Data usunięcie', default=None, blank=True, null=True)
+    created_at = models.DateTimeField(
+        'Data utworzenia', default=datetime.now())
+    modified_at = models.DateTimeField(
+        'Data modyfikacji', default=None, blank=True, null=True)
+    activated_at = models.DateTimeField(
+        'Data aktywacji', default=None, blank=True, null=True)
+    deleted_at = models.DateTimeField(
+        'Data usunięcie', default=None, blank=True, null=True)
 
-    tags = TaggableManager(_('Tags'), blank=True, related_name='has_static_pages')
+    tags = TaggableManager(
+        _('Tags'), blank=True, related_name='has_static_pages')
 
     objects = PublishedManager()
 
@@ -53,7 +69,8 @@ class Entry(models.Model):
 
         self.save()
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
         self.content_r = render_bbcode(self.content)
 
         if not self.slug:
@@ -64,4 +81,5 @@ class Entry(models.Model):
         else:
             self.created_at = datetime.now()
 
-        super(Entry, self).save(force_insert, force_update, using, update_fields)
+        super(Entry, self).save(
+            force_insert, force_update, using, update_fields)

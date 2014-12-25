@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-
+"""CMS views"""
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponseRedirect
@@ -7,7 +7,11 @@ from django.shortcuts import redirect
 from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import FormView
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import views as auth_views, authenticate, login as auth_login
+from django.contrib.auth import (
+    views as auth_views,
+    authenticate,
+    login as auth_login,
+)
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from boski.helpers.others import get_values
@@ -35,16 +39,20 @@ class Login(FormView):
         if user is not None:
             if user.is_active:
                 auth_login(self.request, user)
-                messages.success(self.request, _('You have been successfully logged in'))
-                ActionLog.log(self.request, ActionLog.LOGIN, _('Login successful'))
+                messages.success(self.request,
+                                 _('You have been successfully logged in'))
+                ActionLog.log(self.request, ActionLog.LOGIN,
+                              _('Login successful'))
 
                 return super(Login, self).form_valid(form)
             else:
                 messages.error(self.request, _('Your account is inactive'))
-                ActionLog.log(self.request, ActionLog.LOGIN_ATTEMPT, _('Login on inactive account'))
+                ActionLog.log(self.request, ActionLog.LOGIN_ATTEMPT,
+                              _('Login on inactive account'))
         else:
             messages.error(self.request, _('Wrong login credentials'))
-            ActionLog.log(self.request, ActionLog.LOGIN_ATTEMPT, _('Wrong login credentials'))
+            ActionLog.log(self.request, ActionLog.LOGIN_ATTEMPT,
+                          _('Wrong login credentials'))
 
         return self.render_to_response(self.get_context_data(form=form))
 
@@ -77,11 +85,17 @@ def change_password(request):
         try:
             request.user.set_password(form.cleaned_data['new_password1'])
             messages.success(request, _('Your password has been changed'))
-            ActionLog.log(request, ActionLog.PASSWORD_CHANGE, _('Password change'))
+            ActionLog.log(request, ActionLog.PASSWORD_CHANGE,
+                          _('Password change'))
+
             return HttpResponseRedirect(back)
         except:
-            ActionLog.log(request, ActionLog.EXCEPTION, _('Error occurred during changing password'))
-            messages.error(request, _('An error has occurred during changing password'))
+            ActionLog.log(request, ActionLog.EXCEPTION,
+                          _('Error occurred during changing password'))
+            messages.error(
+                request,
+                _('An error has occurred during changing password'),
+            )
 
     name = _('Password change')
     request.breadcrumbs = ({'name': name, 'url': 'cms:change-password'},)
@@ -125,8 +139,16 @@ class Log(ListView, LoginRequiredMixin):
             'class': 'none',
             'options': dict({'': '---'}.items() + action_type_options.items())
         }),
-        ('created_at__gte', {'label': _('Created from'), 'type': 'text', 'class': 'calendar'}),
-        ('created_at__lte', {'label': _('To'), 'type': 'text', 'class': 'calendar'})
+        ('created_at__gte', {
+            'label': _('Created from'),
+            'type': 'text',
+            'class': 'calendar',
+        }),
+        ('created_at__lte', {
+            'label': _('To'),
+            'type': 'text',
+            'class': 'calendar',
+        }),
     )
 
     mapColumns = {
@@ -153,17 +175,27 @@ class Log(ListView, LoginRequiredMixin):
     def prepare_response_data(self, data):
         response_data = super(Log, self).prepare_response_data(data)
 
-        user_list = get_values(User.objects.all(), ('username', 'first_name', 'last_name', 'email'), 'pk')
+        user_list = get_values(
+            User.objects.all(),
+            ('username', 'first_name', 'last_name', 'email'),
+            'pk',
+        )
 
         for i in response_data:
             if response_data[i]['user']:
                 pk = response_data[i]['user']
-                response_data[i]['user'] = user_list[pk]['first_name'] + ' ' + user_list[pk]['last_name'] \
-                    if user_list[pk]['first_name'] or user_list[pk]['last_name'] else user_list[pk]['username']
+                if user_list[pk]['first_name'] or user_list[pk]['last_name']:
+                    response_data[i]['user'] = user_list[pk]['first_name'] + \
+                        ' ' + user_list[pk]['last_name']
+                else:
+                    response_data[i]['user'] = user_list[pk]['username']
             else:
                 response_data[i]['user'] = '---'
 
-            response_data[i]['action_type'] = self.action_type_options[response_data[i]['action_type']] \
-                if response_data[i]['action_type'] else '---'
+            if response_data[i]['action_type']:
+                response_data[i]['action_type'] = self\
+                    .action_type_options[response_data[i]['action_type']]
+            else:
+                response_data[i]['action_type'] = '---'
 
         return response_data

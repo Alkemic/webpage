@@ -24,7 +24,8 @@ from boski.mixins import JSONResponseMixin, BreadcrumbsMixin
 __author__ = 'Daniel Alkemic Czuba <dc@danielczuba.pl>'
 
 
-class ListView(BreadcrumbsMixin, JSONResponseMixin, TemplateResponseMixin, View):
+class ListView(BreadcrumbsMixin, JSONResponseMixin,
+               TemplateResponseMixin, View):
     """ Basic listing with AJAX data loading """
     template_name = 'crud/list.html'
     queryset = None
@@ -50,7 +51,11 @@ class ListView(BreadcrumbsMixin, JSONResponseMixin, TemplateResponseMixin, View)
     per_page = 30
 
     def get(self, request, *args, **kwargs):
-        if self.request.is_ajax() or self.request.GET.get('format', 'html') == 'json':
+        json_required = any((
+            self.request.is_ajax(),
+            self.request.GET.get('format', 'html') == 'json',
+        ))
+        if json_required:
             context = self.get_context_ajax()
             return JSONResponseMixin.render_to_response(self, context)
         else:
@@ -133,7 +138,8 @@ class ListView(BreadcrumbsMixin, JSONResponseMixin, TemplateResponseMixin, View)
         fields_name = self.get_fields_name()
         i = 0
         for row in data:
-            response_data[i] = model_to_dict(row, fields=fields_name, exclude=[])
+            response_data[i] = model_to_dict(
+                row, fields=fields_name, exclude=[])
             response_data[i]['_meta'] = {}
             i += 1
 
@@ -150,8 +156,9 @@ class ListView(BreadcrumbsMixin, JSONResponseMixin, TemplateResponseMixin, View)
             return Q(pk__isnull=True)
 
         for col_name in self.searchColumns:
-            statement = Q(**{col_name + '__icontains': phrase}) if statement is None else statement | Q(
-                **{col_name + '__icontains': phrase})
+            statement = Q(**{col_name + '__icontains': phrase}) \
+                if statement is None \
+                else statement | Q(**{col_name + '__icontains': phrase})
 
         return statement
 
@@ -165,8 +172,9 @@ class ListView(BreadcrumbsMixin, JSONResponseMixin, TemplateResponseMixin, View)
             else:
                 value = where[col_name]
 
-            where_statement = Q(**{col_name: value}) if where_statement is None else where_statement | Q(
-                **{col_name: value})
+            where_statement = Q(**{col_name: value}) \
+                if where_statement is None \
+                else where_statement | Q(**{col_name: value})
 
         return where_statement
 
@@ -207,9 +215,12 @@ class UpdateView(BreadcrumbsMixin, DjangoUpdateView):
     def get_success_url(self):
         resolved = resolve(self.request.path)
         if self.request.POST.get('next', None) == 'edit':
-            return reverse('%s:%s' % (resolved.namespace, self.actions['update']), kwargs={'pk': self.object.pk})
+            return reverse('%s:%s' % (
+                resolved.namespace, self.actions['update']
+            ), kwargs={'pk': self.object.pk})
         else:
-            return reverse('%s:%s' % (resolved.namespace, self.actions['index']))
+            return reverse('%s:%s' % (
+                resolved.namespace, self.actions['index']))
 
 
 class CreateView(BreadcrumbsMixin, DjangoCreateView):
@@ -239,7 +250,9 @@ class CreateView(BreadcrumbsMixin, DjangoCreateView):
     def get_success_url(self):
         r = resolve(self.request.path)
         if self.request.POST.get('next', None) == 'edit':
-            return reverse('%s:%s' % (r.namespace, self.actions['update']), kwargs={'pk': self.object.pk})
+            return reverse('%s:%s' % (
+                r.namespace, self.actions['update']
+            ), kwargs={'pk': self.object.pk})
         else:
             return reverse('%s:%s' % (r.namespace, self.actions['index']))
 

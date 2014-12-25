@@ -10,7 +10,8 @@ __author__ = 'Daniel Alkemic Czuba <dc@danielczuba.pl>'
 
 def get_params(request):
     """
-    Returns dict with params stored in GET and POST. Params from POST shadows GET.
+    Returns dict with params stored in GET and POST. Params
+    from POST shadows GET.
     """
     _params, params = dict(request.GET.items() + request.POST.items()), {}
 
@@ -32,18 +33,21 @@ def get_params(request):
 
 def get_values(iterable, keys, index_key='id', as_tuple=False):
     """
-    Returns dict of given keys from iterable object, then index them by index_key. If as_tuple is True, then return
+    Returns dict of given keys from iterable object, then index them by
+    index_key. If as_tuple is True, then return
     as two-dimensional tuple.
     """
     to_return = {}
 
     for entry in iterable:
         if not isinstance(keys, tuple):
-            to_return[entry.__getattribute__(index_key)] = entry.__getattribute__(keys)
+            to_return[entry.__getattribute__(index_key)] = \
+                entry.__getattribute__(keys)
         else:
             to_return[entry.__getattribute__(index_key)] = {}
             for key in keys:
-                to_return[entry.__getattribute__(index_key)][key] = entry.__getattribute__(key)
+                to_return[entry.__getattribute__(index_key)][key] = \
+                    entry.__getattribute__(key)
 
     if as_tuple:
         tmp = {(i, to_return[i]) for i in to_return}
@@ -54,7 +58,8 @@ def get_values(iterable, keys, index_key='id', as_tuple=False):
 
 def reindex(iterable, index_key='id', as_tuple=False):
     """
-    Reindex, and return iterable by index_key. If as_tuple is True, then return as two-dimensional tuple.
+    Reindex, and return iterable by index_key. If as_tuple is True, then return
+    as two-dimensional tuple.
     Beware, that this break optimisation from generators, etc.
     """
     to_return = {}
@@ -71,7 +76,8 @@ def reindex(iterable, index_key='id', as_tuple=False):
 
 def generate_thumb(img, thumb_size, output_format, crop=False, upscale=False):
     """
-    Generates a thumbnail image and returns a ContentFile object with the thumbnail
+    Generates a thumbnail image and returns a ContentFile object with
+    the thumbnail
 
     Parameters:
     ===========
@@ -94,15 +100,20 @@ def generate_thumb(img, thumb_size, output_format, crop=False, upscale=False):
     max_width, max_height = thumb_size
     thumb_w, thumb_h = thumb_size
 
-    # gdy zachodzi potrzeba zwiększenia rozmiaru obrazka, tak aby szerokość bądź wysokość była równa wartości dla miniaturki
+    # gdy zachodzi potrzeba zwiększenia rozmiaru obrazka, tak aby szerokość
+    # bądź wysokość była równa wartości dla miniaturki
     if upscale:
         src_width, src_height = image.size
         if src_height < max_height and src_width < max_width:
             pass
         elif src_height < max_height:
-            image.resize((max_width, int(float(src_width * max_height) / float(max_width))), Image.CUBIC)
+            image.resize((max_width, int(
+                float(src_width * max_height) / float(max_width)
+            )), Image.CUBIC)
         elif src_width < max_width:
-            image.resize((int(float(src_height * max_width) / float(max_height)), max_height), Image.CUBIC)
+            image.resize((int(
+                float(src_height * max_width) / float(max_height)
+            ), max_height), Image.CUBIC)
 
             # If you want to generate a square thumbnail
     if thumb_w == thumb_h:
@@ -114,11 +125,13 @@ def generate_thumb(img, thumb_size, output_format, crop=False, upscale=False):
         xnewsize = (xsize - minsize) / 2
         ynewsize = (ysize - minsize) / 2
         # crop it
-        image2 = image.crop((xnewsize, ynewsize, xsize - xnewsize, ysize - ynewsize))
+        image2 = image.crop((
+            xnewsize, ynewsize, xsize - xnewsize, ysize - ynewsize))
         """:type : PIL.JpegImagePlugin.JpegImageFile"""
         # load is necessary after crop
         image2.load()
-        # thumbnail of the cropped image (with ANTIALIAS to make it look better)
+        # thumbnail of the cropped image
+        # (with ANTIALIAS to make it look better)
         image2.thumbnail(thumb_size, Image.ANTIALIAS)
     elif crop:
         src_width, src_height = image.size
@@ -137,7 +150,9 @@ def generate_thumb(img, thumb_size, output_format, crop=False, upscale=False):
             x_offset = 0
             y_offset = int(float(src_height - crop_height) / 3)
 
-        image2 = image.crop((x_offset, y_offset, x_offset + int(crop_width), y_offset + int(crop_height)))
+        image2 = image.crop((
+            x_offset, y_offset, x_offset + int(crop_width),
+            y_offset + int(crop_height)))
         image2 = image2.resize(thumb_size, Image.ANTIALIAS)
     else:
         # not quad

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Models related to blog"""
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from uuslug import uuslug as slugify
@@ -28,7 +29,10 @@ class Entry(models.Model):
 
     is_active = models.BooleanField(_('Is active?'), default=False)
 
-    created_at = models.DateTimeField(_('Date created'), default=datetime.now())
+    created_at = models.DateTimeField(
+        _('Date created'),
+        default=datetime.now(),
+    )
     modified_at = models.DateTimeField(
         _('Date modified'),
         blank=True,

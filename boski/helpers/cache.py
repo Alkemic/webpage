@@ -5,10 +5,12 @@ from django.utils.cache import get_cache_key
 from django.core.cache import cache
 
 
-def delete_view_cache(url=None, pattern=None, args=None, kwargs=None, query_string=None, key_prefix=None):
+def delete_view_cache(url=None, pattern=None, args=None, kwargs=None,
+                      query_string=None, key_prefix=None):
     """
     Provide `url` or `pattern` (ie: 'blog:index') with `args`/`kwargs`
-    When successfully delete data from cache returns True, else False. Where False indicates plenty of thing, ie: cache
+    When successfully delete data from cache returns True, else False. Where
+    False indicates plenty of thing, ie: cache
     error, key missing, etc.
 
     @param url: string or None

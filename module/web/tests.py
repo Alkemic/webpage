@@ -1,15 +1,13 @@
 # -*- coding:utf-8 -*-
+"""Base module tests"""
 import os
 from datetime import datetime
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
 from django.test.utils import override_settings
-
-#from dc.settings import PROJECT_ROOT
-
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir, os.pardir))
 
 
 @override_settings(IS_WIP=True)
@@ -21,7 +19,7 @@ class NoIndexRedirecTestCase(TestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
 
-        with open("%s/templates/wip.txt" % PROJECT_ROOT) as fh:
+        with open("%s/templates/wip.txt" % settings.BASE_DIR) as fh:
             contents = fh.read()
         self.assertEqual(response.content, contents)
 

@@ -6,4 +6,5 @@ __author__ = 'Daniel Alkemic Czuba <dc@danielczuba.pl>'
 
 class TemplateTextPlainView(TemplateView):
     def render_to_response(self, context, **kwargs):
-        return super(TemplateTextPlainView, self).render_to_response(context, content_type='text/plain', **kwargs)
+        return super(TemplateTextPlainView, self).render_to_response(
+            context, content_type='text/plain', **kwargs)

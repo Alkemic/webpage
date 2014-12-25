@@ -31,7 +31,9 @@ class JSONResponseMixin(object):
 
     def convert_context_to_json(self, context):
         """Convert the context dictionary into a JSON object"""
-        dthandler = lambda obj: obj.__str__() if isinstance(obj, datetime.datetime) else None
+        dthandler = lambda obj: obj.__str__() \
+            if isinstance(obj, datetime.datetime) \
+            else None
         return simplejson.dumps(context, default=dthandler)
 
 
@@ -41,4 +43,5 @@ class LoginRequiredMixin(object):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         """ dispatch """
-        return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
+        return super(LoginRequiredMixin, self).dispatch(
+            request, *args, **kwargs)

@@ -11,7 +11,10 @@
 #
 # fiedsets = (
 #     ('Personal Data', {'fields':('name','gender'), 'id':'personal_data'}),
-#     ('Address', {'fields':('street','number','city','zip_code'), 'id':'address'}),
+#     ('Address', {
+#                   'fields':('street','number','city','zip_code'),
+#                   'id':'address',
+#     }),
 # )
 #
 
@@ -44,14 +47,17 @@ def draw_form(form, fieldsets=False):
                 cls.append('error')
             cls = ' class="%s"' % " ".join(cls)
             append('<li%s>%s<label for="%s">%s:</label> %s %s</li>' % (
-                cls, errors, field_name, unicode(field.label), unicode(field), help_text))
+                cls, errors, field_name, unicode(field.label),
+                unicode(field), help_text,
+            ))
         return "".join(fields_html)
 
     form_html = []
     append_to_form = form_html.append
     form.auto_id = True
 
-    fieldset_template = '<fieldset%(id)s><legend>%(legend)s</legend><ul>%(fields)s</ul></fieldset>'
+    fieldset_template = '<fieldset%(id)s><legend>%(legend)s</legend>' \
+                        '<ul>%(fields)s</ul></fieldset>'
 
     if fieldsets:
         for fieldset in fieldsets:

@@ -7,11 +7,10 @@ import os
 from django import template
 from django.conf import settings
 from django.utils import timezone
-from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse, resolve
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-from postmarkup.parser import create, pygments_available, SimpleTag, strip_bbcode as postmarkup_strip_bbcode
+from postmarkup.parser import create, pygments_available, SimpleTag
 
 from boski.helpers import generate_thumb
 
@@ -32,8 +31,10 @@ def rm_kurwa(text):
     """
     import re
 
-    kurwa_regex = '(?i)chuj|chuje|chuji|chujki|kurwa|kurwy|dziwka|dziwki|dziwko|kutas|kutasy|kutasie|suka|suki|suko|' \
-                  'suczko|skurwiel|skurwielu|skurwiele|skurwieli|cwel|cwele|cweli|peneras|chwdp|hwdp'
+    kurwa_regex = '(?i)chuj|chuje|chuji|chujki|kurwa|kurwy|dziwka|dziwki|' \
+                  'dziwko|kutas|kutasy|kutasie|suka|suki|suko|suczko|skurwiel' \
+                  '|skurwielu|skurwiele|skurwieli|cwel|cwele|cweli|peneras' \
+                  '|chwdp|hwdp'
     return '#$%^&*'.join(re.split(kurwa_regex, text))
 
 
@@ -52,21 +53,18 @@ do_dir.is_save = True
 @register.filter
 def show_sexy_date(date):
     """
-    Wyświetla ładnie sformatowaną datę, w postaci 'wczoraj o 12:34', 'dziś o 8:12'
+    Wyświetla ładnie sformatowaną datę, w postaci 'wczoraj o 12:34',
+    'dziś o 8:12'
     :param : datetime
     """
-    # jeśli pusty obiekt podajemy, to zwracamy nigdy, w miarę dobre rozwiązanie ;-)
     if date.__class__ == 'NoneType' or date is None or date == '':
         return _('never')
 
     months = {
-        1: 'stycznia', 2: 'lutego', 3: 'marca', 4: 'kwietnia', 5: 'maja', 6: 'czerwca',
-        7: 'lipca', 8: 'sierpnia', 9: 'września', 10: 'października', 11: 'listopada', 12: 'grudnia',
-    }
-    months = {
-        1: _('of january'), 2: _('of february'), 3: _('of march'), 4: _('of april'), 5: _('of may'), 6: ('of june'),
-        7: _('of july'), 8: _('of august'), 9: _('of september'), 10: _('of october'), 11: _('of november'),
-        12: _('of ecember'),
+        1: _('of january'), 2: _('of february'), 3: _('of march'),
+        4: _('of april'), 5: _('of may'), 6: ('of june'), 7: _('of july'),
+        8: _('of august'), 9: _('of september'), 10: _('of october'),
+        11: _('of november'), 12: _('of ecember'),
     }
     now = datetime.now()
     if date.tzinfo is not None:
@@ -76,7 +74,7 @@ def show_sexy_date(date):
     days = now.day - date.day
     minutes = now.minute - date.minute
 
-    delta = now - date  # potrzebne przy pierwszych opcja, gdzie nie minęła godzina, ale będzie różnica przy używaniu days jako wyznacznika
+    delta = now - date
 
     if delta.seconds.__div__(60) == 0 and delta.days == 0:
         return _('just now')
@@ -84,7 +82,7 @@ def show_sexy_date(date):
         return _('minute ago')
     elif delta.seconds.__div__(60) in (2, 3, 4) and delta.days == 0:
         return _('%d minutes ago') % delta.seconds.__div__(60)
-    elif 5 < delta.seconds.__div__(60) < 60 and delta.days == 0:  # tutaj cos sie sypalo bez uzyca warunku z delta.days
+    elif 5 < delta.seconds.__div__(60) < 60 and delta.days == 0:
         return _('%d minutes ago') % delta.seconds.__div__(60)
     elif delta.days < 1 and days == 0:
         return _('today at %d:%02d') % (date.hour, date.minute)
@@ -93,7 +91,13 @@ def show_sexy_date(date):
     elif delta.days < 3 and days == 2:
         return _('two days ago at %d:%02d') % (date.hour, date.minute)
     else:
-        return _('%d %s %d at %d:%02d') % (date.day, months[date.month], date.year, date.hour, date.minute)
+        return _('%d %s %d at %d:%02d') % (
+            date.day,
+            months[date.month],
+            date.year,
+            date.hour,
+            date.minute,
+        )
 
 
 @register.simple_tag
@@ -104,8 +108,10 @@ def gravatar(email, size=48):
     <img src="{% gravatar mail@company.com 64 %}" />
     """
 
-    url = 'http://www.gravatar.com/avatar.php?%s' % urllib.urlencode({'gravatar_id': hashlib.md5(email).hexdigest(),
-                                                                      'size': str(size)})
+    url = 'http://www.gravatar.com/avatar.php?%s' % urllib.urlencode({
+        'gravatar_id': hashlib.md5(email).hexdigest(),
+        'size': str(size),
+    })
 
     return url
 
@@ -175,23 +181,28 @@ def online_users(num):
     """ Show users that were active in last hour. """
     one_hour_ago = datetime.now() - timedelta(hours=1)
     sql_datetime = datetime.strftime(one_hour_ago, '%Y-%m-%d %H:%M:%S')
-    users = User.objects.filter(last_login__gt=sql_datetime, is_active__exact=1).order_by('-last_login')[:num]
+    users = User.objects\
+                .filter(last_login__gt=sql_datetime, is_active__exact=1)\
+                .order_by('-last_login')[:num]
     return {'user': users, }
 
 
 @register.inclusion_tag('utils/tags/last_registers.html')
 def last_registers(num):
     """ Show last registered users """
-    users = User.objects.filter(is_active__exact=1).order_by('-date_joined')[:num]
-    return {
-        'user': users,
-    }
+    users = User.objects.filter(is_active__exact=1)\
+                .order_by('-date_joined')[:num]
+
+    return {'user': users}
 
 
 @register.inclusion_tag('utils/tags/last_logins.html')
 def last_logins(num):
-    """ Show last num logged in users (it does shows only that logged in by form) """
-    users = User.objects.filter(is_active__exact=1).order_by('-last_login')[:num]
+    """Show last num logged in users (it does shows only
+    that logged in by form)"""
+    users = User.objects.filter(is_active__exact=1)\
+                .order_by('-last_login')[:num]
+
     return {'user': users, }
 
 
@@ -222,13 +233,15 @@ def thumbnail(img_url, height=200, width=120, crop=True):
         url = img_url
         filename = img_url.split('/')[-1]
         filename_root = ".".join(img_url.split('/')[-1].split('.')[:-1])
-        folder = "/".join(img_url.split('/')[:-1]).replace(settings.MEDIA_URL, settings.MEDIA_ROOT + "/")
+        folder = "/".join(img_url.split('/')[:-1]).replace(
+            settings.MEDIA_URL, settings.MEDIA_ROOT + "/")
 
     thumb_name = "%s_thumb%dx%d.jpg" % (img.filename_root, height, width)
 
     if not os.path.exists("%s/%s" % (img.folder, thumb_name)):
         try:
-            thumb = generate_thumb(open("%s/%s" % (img.folder, img.filename)), (height, width), 'jpg', crop)
+            thumb = generate_thumb(open("%s/%s" % (img.folder, img.filename)),
+                                   (height, width), 'jpg', crop)
         except Exception:
             # todo: log this exception
             return ''
@@ -258,14 +271,18 @@ def fb_thumbnail(img, args=None):
 
     thumb_name = "%s_thumb%dx%d.jpg" % (img.filename_root, height, width)
 
-    if not os.path.exists("%s/%s" % (img.path.replace(img.filename, ''), thumb_name)):
+    thumb_path = os.path.exists("%s/%s" % (
+        img.path.replace(img.filename, ''), thumb_name))
+    if not os.path.exists(thumb_path):
         try:
-            thumb = generate_thumb(open(img.path), (height, width), 'jpg', crop)
+            thumb = generate_thumb(
+                open(img.path), (height, width), 'jpg', crop)
         except IOError:  # brak pliku
             return ''
         except Exception:  # lol
             return ''
-        fh = open("%s/%s" % (img.path.replace(img.filename, ''), thumb_name), 'w')
+        fh = open("%s/%s" % (
+            img.path.replace(img.filename, ''), thumb_name), 'w')
         thumb.seek(0)
         fh.write(thumb.read())
         fh.close()
@@ -303,7 +320,8 @@ def thumbnail2(img_url, args=None):
         url = img_url
         filename = img_url.split('/')[-1]
         filename_root = ".".join(img_url.split('/')[-1].split('.')[:-1])
-        folder = "/".join(img_url.split('/')[:-1]).replace(settings.MEDIA_URL, settings.MEDIA_ROOT + "/")
+        folder = "/".join(img_url.split('/')[:-1]).replace(
+            settings.MEDIA_URL, settings.MEDIA_ROOT + "/")
 
     height, width, crop = 200, 120, True
     if args is not None:
@@ -317,7 +335,9 @@ def thumbnail2(img_url, args=None):
 
     if not os.path.exists("%s/%s" % (img.folder, thumb_name)):
         try:
-            thumb = generate_thumb(open("%s/%s" % (img.folder, img.filename)), (height, width), 'jpg', crop)
+            thumb = generate_thumb(open("%s/%s" % (
+                img.folder, img.filename)
+            ), (height, width), 'jpg', crop)
         except Exception:
             # import traceback
             # traceback.print_exc()
@@ -345,19 +365,23 @@ def thumbnail_c(img_url, height=200, width=120, crop=True):
 
     img_url = urllib.unquote(img_url)
     filename = img_url.split('/')[-1]  # nazwa pliku
-    filename_root = ".".join(img_url.split('/')[-1].split('.')[:-1])  # ścieżka do pliku
-    folder = "/".join(img_url.split('/')[:-1]).replace(settings.MEDIA_URL,
-                                                       settings.MEDIA_ROOT + "/")  # ścieżka do miniaturki
+    filename_root = ".".join(img_url.split('/')[-1].split('.')[:-1])
+    folder = "/".join(img_url.split('/')[:-1]).replace(
+        settings.MEDIA_URL, settings.MEDIA_ROOT + "/")  # ścieżka do miniaturki
 
     if not folder.startswith(settings.MEDIA_ROOT):
         folder = '%s/%s' % (settings.MEDIA_ROOT, folder)
 
-    thumb_name = "%s.jpg" % hashlib.sha256("%s_thumb%dx%d.jpg" % (filename_root, height, width)).hexdigest()
+    thumb_name = "%s.jpg" % hashlib.sha256("%s_thumb%dx%d.jpg" % (
+        filename_root, height, width)).hexdigest()
 
-    created_path, hash_part = create_dir_hash_structure(thumb_name, settings.MEDIA_ROOT + '/photo', 7)
+    created_path, hash_part = create_dir_hash_structure(
+        thumb_name, settings.MEDIA_ROOT + '/photo', 7)
 
-    full_thumbnail_path = "%s/%s" % (created_path, thumb_name.replace(''.join(hash_part.split('/')), ''))
-    full_thumbnail_url = "photo/%s/%s" % (hash_part, thumb_name.replace(''.join(hash_part.split('/')), ''))
+    full_thumbnail_path = "%s/%s" % (
+        created_path, thumb_name.replace(''.join(hash_part.split('/')), ''))
+    full_thumbnail_url = "photo/%s/%s" % (
+        hash_part, thumb_name.replace(''.join(hash_part.split('/')), ''))
 
     if not os.path.exists(full_thumbnail_path):
         try:
@@ -432,7 +456,7 @@ def within_time(datetime_obj, value):
 
     if isinstance(datetime_obj, date):
         datetime_obj = datetime.combine(datetime_obj, datetime.min.time())
-    elif not isinstance(datetime_obj, datetime):  # not a datetime or date object
+    elif not isinstance(datetime_obj, datetime):  # not a datetime/date object
         raise Exception(_('Instance of `date` or `datetime` expected.'))
 
     if suffix == 'd':

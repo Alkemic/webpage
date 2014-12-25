@@ -35,4 +35,5 @@ def gravatar(email, size=48):
         'size': str(size)
     })
 
-    return u"""<img src="%s" width="%s" height="%s" alt="gravatar" class="gravatar" border="0" />""" % (url, size, size)
+    return u"<img src=\"%s\" width=\"%s\" height=\"%s\" alt=\"gravatar\" " \
+           u"class=\"gravatar\" border=\"0\" />" % (url, size, size)

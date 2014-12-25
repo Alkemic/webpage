@@ -25,6 +25,7 @@ for i in xrange(1, 7):
 
 render_bbcode = _postmarkup.render_to_html
 
+
 class BootstrapImgTag(ImgTag):
     """
     Adding bootstrap img classes

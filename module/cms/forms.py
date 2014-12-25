@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""CMS forms"""
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
@@ -7,9 +8,12 @@ __author__ = 'Daniel Alkemic Czuba <alkemic7@gmail.com>'
 
 class LoginForm(forms.Form):
     """Formularz rejestracji."""
-    # username = forms.CharField(label='Login', min_length=3, max_length=90)
     email = forms.CharField(label='Email', min_length=3, max_length=90)
-    password = forms.CharField(label='Hasło', min_length=6, widget=forms.PasswordInput)
+    password = forms.CharField(
+        label='Hasło',
+        min_length=6,
+        widget=forms.PasswordInput,
+    )
 
 
 class SetPasswordForm(forms.Form):
@@ -17,10 +21,18 @@ class SetPasswordForm(forms.Form):
     A form that lets a user change set his/her password without
     entering the old password
     """
-    new_password1 = forms.CharField(label=_('New password'), min_length=6, widget=forms.PasswordInput,
-                                    help_text=_('At least 6 chars'))
-    new_password2 = forms.CharField(label=_('Repeat new password'), min_length=6, widget=forms.PasswordInput,
-                                    help_text=_('At least 6 chars'))
+    new_password1 = forms.CharField(
+        label=_('New password'),
+        min_length=6,
+        widget=forms.PasswordInput,
+        help_text=_('At least 6 chars'),
+    )
+    new_password2 = forms.CharField(
+        label=_('Repeat new password'),
+        min_length=6,
+        widget=forms.PasswordInput,
+        help_text=_('At least 6 chars'),
+    )
 
     def __init__(self, user, *args, **kwargs):
         self.user = user
@@ -46,7 +58,10 @@ class PasswordChangeForm(SetPasswordForm):
     A form that lets a user change his/her password by entering
     their old password.
     """
-    old_password = forms.CharField(label=_("Old password"), widget=forms.PasswordInput)
+    old_password = forms.CharField(
+        label=_("Old password"),
+        widget=forms.PasswordInput,
+    )
 
     def clean_old_password(self):
         """
@@ -54,8 +69,14 @@ class PasswordChangeForm(SetPasswordForm):
         """
         old_password = self.cleaned_data["old_password"]
         if not self.user.check_password(old_password):
-            raise forms.ValidationError("Twoje stare hasło jest niepoprawne. Wprowadź je ponownie.")
+            raise forms.ValidationError(
+                "Twoje stare hasło jest niepoprawne. Wprowadź je ponownie."
+            )
         return old_password
 
 
-PasswordChangeForm.base_fields.keyOrder = ['old_password', 'new_password1', 'new_password2']
+PasswordChangeForm.base_fields.keyOrder = [
+    'old_password',
+    'new_password1',
+    'new_password2',
+]

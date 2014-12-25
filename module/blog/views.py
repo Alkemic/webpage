@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Blog views"""
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, DetailView
 from django.utils.translation import ugettext_lazy as _
@@ -32,11 +33,11 @@ class TagBlogList(BreadcrumbsMixin, ListView):
 
     @property
     def breadcrumbs(self):
-        return (_('Blog'), reverse_lazy('blog:index')), \
-               (
-                   _('Tag: %s') % self.kwargs['tag'],
-                   reverse_lazy('blog:tag', args=[self.kwargs['tag']])
-               ),
+        return (
+            (_('Blog'), reverse_lazy('blog:index')),
+            (_('Tag: %s') % self.kwargs['tag'],
+             reverse_lazy('blog:tag', args=[self.kwargs['tag']]),),
+        )
 
     def get_queryset(self):
         return Entry.objects.published().filter(tags__name=self.kwargs['tag'])
@@ -57,7 +58,6 @@ class EntryView(BreadcrumbsMixin, DetailView):
             self.queryset = Entry.objects.published()
 
         return super(EntryView, self).dispatch(request, *args, **kwargs)
-
 
     @property
     def breadcrumbs(self):

@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+"""Models related to base CMS"""
 from datetime import datetime
 
 from django.db import models
@@ -8,7 +9,8 @@ from simplejson import dumps
 
 class ActionLog(models.Model):
     """
-    action_type - na razie plain text, z czasem wyjdzie jakie są potrzebna pola, obecnie:
+    action_type - na razie plain text, z czasem wyjdzie jakie są
+    potrzebna pola, obecnie:
         - login
         - login_attempt
         - create

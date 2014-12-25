@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Blog views"""
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -26,8 +27,12 @@ class List(LoginRequiredMixin, ListView):
     )
 
     filters = (
-        ('created_at__gte', {'label': _('Created from'), 'type': 'text', 'class': 'calendar'}),
-        ('created_at__lte', {'label': _('To'), 'type': 'text', 'class': 'calendar'})
+        ('created_at__gte', {
+            'label': _('Created from'), 'type': 'text', 'class': 'calendar',
+        }),
+        ('created_at__lte', {
+            'label': _('To'), 'type': 'text', 'class': 'calendar',
+        }),
     )
 
     mapColumns = {
@@ -53,7 +58,8 @@ class Update(LoginRequiredMixin, UpdateView):
     @property
     def breadcrumbs(self):
         return {'name': _('Blog'), 'url': 'cms:blog:index'}, \
-               {'name': self.name, 'url': 'cms:blog:update', 'pk': self.get_object().pk}
+               {'name': self.name, 'url': 'cms:blog:update',
+                'pk': self.get_object().pk}
 
 
 class Create(LoginRequiredMixin, CreateView):
@@ -62,7 +68,8 @@ class Create(LoginRequiredMixin, CreateView):
 
     @property
     def breadcrumbs(self):
-        return {'name': _('Blog'), 'url': 'cms:blog:index'}, {'name': self.name, 'url': 'cms:blog:create'}
+        return {'name': _('Blog'), 'url': 'cms:blog:index'}, \
+               {'name': self.name, 'url': 'cms:blog:create'}
 
 
 class Delete(LoginRequiredMixin, DeleteView):
@@ -71,7 +78,8 @@ class Delete(LoginRequiredMixin, DeleteView):
     @property
     def breadcrumbs(self):
         return {'name': _('Blog'), 'url': 'cms:blog:index'}, \
-               {'name': self.name, 'url': 'cms:blog:delete', 'pk': self.get_object().pk}
+               {'name': self.name, 'url': 'cms:blog:delete',
+                'pk': self.get_object().pk}
 
 
 @login_required

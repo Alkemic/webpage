@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""About models"""
 from datetime import datetime
 
 from django.db import models
@@ -15,7 +16,10 @@ class Mail(models.Model):
     ip = models.IPAddressField(_('IP'))
     ua = models.CharField(_('User agent'), max_length=255)
 
-    created_at = models.DateTimeField(_('Date created'), default=datetime.now())
+    created_at = models.DateTimeField(
+        _('Date created'),
+        default=datetime.now(),
+    )
 
     class Meta:
         verbose_name = _('Mail')

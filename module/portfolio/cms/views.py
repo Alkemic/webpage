@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Cms portfolio views"""
 from datetime import datetime
 
 from django import http
@@ -30,8 +31,16 @@ class List(LoginRequiredMixin, ListView):
     )
 
     filters = (
-        ('created_at__gte', {'label': _('Created from'), 'type': 'text', 'class': 'calendar'}),
-        ('created_at__lte', {'label': _('To'), 'type': 'text', 'class': 'calendar'})
+        ('created_at__gte', {
+            'label': _('Created from'),
+            'type': 'text',
+            'class': 'calendar',
+        }),
+        ('created_at__lte', {
+            'label': _('To'),
+            'type': 'text',
+            'class': 'calendar',
+        }),
     )
 
     mapColumns = {
@@ -67,7 +76,8 @@ class Update(LoginRequiredMixin, UpdateView):
     @property
     def breadcrumbs(self):
         return {'name': _('Portfolio'), 'url': 'cms:portfolio:index'}, \
-               {'name': self.name, 'url': 'cms:portfolio:update', 'pk': self.get_object().pk}
+               {'name': self.name, 'url': 'cms:portfolio:update',
+                'pk': self.get_object().pk}
 
 
 class Delete(LoginRequiredMixin, DeleteView):
@@ -76,7 +86,8 @@ class Delete(LoginRequiredMixin, DeleteView):
     @property
     def breadcrumbs(self):
         return {'name': _('Portfolio'), 'url': 'cms:portfolio:index'}, \
-               {'name': self.name, 'url': 'cms:portfolio:delete', 'pk': self.get_object().pk}
+               {'name': self.name, 'url': 'cms:portfolio:delete',
+                'pk': self.get_object().pk}
 
 
 @login_required
@@ -105,8 +116,10 @@ def toggle_active(request, pk):
 class CompanyList(LoginRequiredMixin, ListView):
     queryset = Company.objects.all()
 
-    breadcrumbs = ({'name': _('Portfolio'), 'url': 'cms:portfolio:index'},
-                   {'name': _('Company'), 'url': 'cms:portfolio:company-index'},)
+    breadcrumbs = (
+        {'name': _('Portfolio'), 'url': 'cms:portfolio:index'},
+        {'name': _('Company'), 'url': 'cms:portfolio:company-index'},
+    )
 
     listingColumns = (
         ('id', '#'),
@@ -155,7 +168,8 @@ class CompanyUpdate(LoginRequiredMixin, UpdateView):
     def breadcrumbs(self):
         return {'name': _('Portfolio'), 'url': 'cms:portfolio:index'}, \
                {'name': _('Company'), 'url': 'cms:portfolio:company-index'}, \
-               {'name': self.name, 'url': 'cms:portfolio:company-update', 'pk': self.get_object().pk}
+               {'name': self.name, 'url': 'cms:portfolio:company-update',
+                'pk': self.get_object().pk}
 
 
 class CompanyDelete(LoginRequiredMixin, DeleteView):
@@ -166,7 +180,8 @@ class CompanyDelete(LoginRequiredMixin, DeleteView):
     def breadcrumbs(self):
         return {'name': _('Portfolio'), 'url': 'cms:portfolio:index'}, \
                {'name': _('Company'), 'url': 'cms:portfolio:company-index'}, \
-               {'name': self.name, 'url': 'cms:portfolio:company-delete', 'pk': self.get_object().pk}
+               {'name': self.name, 'url': 'cms:portfolio:company-delete',
+                'pk': self.get_object().pk}
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()

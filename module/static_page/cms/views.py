@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""CMS view for static pages"""
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -13,7 +14,9 @@ from module.static_page.cms.forms import EntryForm
 
 
 class List(ListView, LoginRequiredMixin):
-    breadcrumbs = ({'name': _('Static pages'), 'url': 'cms:static_page:index'},)
+    breadcrumbs = (
+        {'name': _('Static pages'), 'url': 'cms:static_page:index'},
+    )
 
     queryset = Entry.objects.non_deleted()
 
@@ -25,8 +28,16 @@ class List(ListView, LoginRequiredMixin):
     )
 
     filters = (
-        ('created_at__gte', {'label': _('Created from'), 'type': 'text', 'class': 'calendar'}),
-        ('created_at__lte', {'label': _('To'), 'type': 'text', 'class': 'calendar'})
+        ('created_at__gte', {
+            'label': _('Created from'),
+            'type': 'text',
+            'class': 'calendar',
+        }),
+        ('created_at__lte', {
+            'label': _('To'),
+            'type': 'text',
+            'class': 'calendar',
+        })
     )
 
     mapColumns = {
@@ -50,8 +61,14 @@ class Create(LoginRequiredMixin, CreateView):
 
     @property
     def breadcrumbs(self):
-        return ({'name': _('Static page'), 'url': 'cms:static_page:index'},
-                {'name': self.name, 'url': 'cms:static_page:update', 'pk': self.get_object().pk},)
+        return (
+            {'name': _('Static page'), 'url': 'cms:static_page:index'},
+            {
+                'name': self.name,
+                'url': 'cms:static_page:update',
+                'pk': self.get_object().pk
+            },
+        )
 
 
 class Update(LoginRequiredMixin, CreateView):
@@ -60,8 +77,14 @@ class Update(LoginRequiredMixin, CreateView):
 
     @property
     def breadcrumbs(self):
-        return ({'name': _('Static page'), 'url': 'cms:static_page:index'},
-                {'name': self.name, 'url': 'cms:static_page:update', 'pk': self.get_object().pk},)
+        return (
+            {'name': _('Static page'), 'url': 'cms:static_page:index'},
+            {
+                'name': self.name,
+                'url': 'cms:static_page:update',
+                'pk': self.get_object().pk,
+            },
+        )
 
 
 @login_required
@@ -78,10 +101,17 @@ def create(request):
         return HttpResponseRedirect(reverse('cms:static_page:index'))
 
     name = _('Create')
-    request.breadcrumbs = ({'name': _('Static page'), 'url': 'cms:static_page:index'},
-                           {'name': name, 'url': 'cms:static_page:create'},)
+    request.breadcrumbs = (
+        {'name': _('Static page'), 'url': 'cms:static_page:index'},
+        {'name': name, 'url': 'cms:static_page:create'},
+    )
 
-    actions = {'create': 'create', 'update': 'update', 'delete': 'delete', 'index': 'index', }
+    actions = {
+        'create': 'create',
+        'update': 'update',
+        'delete': 'delete',
+        'index': 'index',
+    }
 
     return locals()
 
@@ -97,18 +127,28 @@ def update(request, pk):
         entry = form.save(commit=False)
         """ :type : Entry """
         entry.save()
-        messages.success(request, _('Successfully updated static page "%s".') % entry)
+        messages.success(
+            request, _('Successfully updated static page "%s".') % entry)
 
         if request.POST.get('next', None) == 'edit':
-            return HttpResponseRedirect(reverse('cms:static_page:update', args=[pk]))
+            return HttpResponseRedirect(reverse(
+                'cms:static_page:update', args=[pk]
+            ))
 
         return HttpResponseRedirect(reverse('cms:static_page:index'))
 
     name = _('Edit entry "%s"') % entry
-    request.breadcrumbs = ({'name': _('Static page'), 'url': 'cms:static_page:index'},
-                           {'name': name, 'url': 'cms:static_page:update', 'pk': entry.pk},)
+    request.breadcrumbs = (
+        {'name': _('Static page'), 'url': 'cms:static_page:index'},
+        {'name': name, 'url': 'cms:static_page:update', 'pk': entry.pk},
+    )
 
-    actions = {'create': 'create', 'update': 'update', 'delete': 'delete', 'index': 'index', }
+    actions = {
+        'create': 'create',
+        'update': 'update',
+        'delete': 'delete',
+        'index': 'index',
+    }
 
     return dict(locals().items() + {'object': entry}.items())
 
@@ -120,14 +160,22 @@ def delete(request, pk):
 
     if request.POST:
         entry.do_delete()
-        messages.success(request, _('Static page "%s" has been deleted') % entry)
+        messages.success(
+            request, _('Static page "%s" has been deleted') % entry)
         return HttpResponseRedirect(reverse('cms:static_page:index'))
 
     name = _('Delete entry "%s"') % entry
-    request.breadcrumbs = ({'name': _('Static page'), 'url': 'cms:static_page:index'},
-                           {'name': name, 'url': 'cms:static_page:delete', 'pk': entry.pk},)
+    request.breadcrumbs = (
+        {'name': _('Static page'), 'url': 'cms:static_page:index'},
+        {'name': name, 'url': 'cms:static_page:delete', 'pk': entry.pk},
+    )
 
-    actions = {'create': 'create', 'update': 'update', 'delete': 'delete', 'index': 'index', }
+    actions = {
+        'create': 'create',
+        'update': 'update',
+        'delete': 'delete',
+        'index': 'index',
+    }
 
     return dict(locals().items() + {'object': entry}.items())
 
@@ -138,8 +186,9 @@ def activate(request, pk):
         entry = Entry.objects.get(pk=pk)
         """ :type : Entry """
         entry.do_activate()
-        messages.success(request, _(u'Static page "%s" has been activated') % entry)
-    except Exception as e:
+        messages.success(
+            request, _(u'Static page "%s" has been activated') % entry)
+    except Exception:
         messages.error(request, _('Error occurred during saving'))
 
     return HttpResponseRedirect(reverse('cms:static_page:index'))

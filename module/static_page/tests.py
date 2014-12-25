@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+"""Static pages tests"""
 from datetime import datetime
 
 from django.test import TestCase
@@ -22,7 +23,8 @@ class StaticPageTestCase(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_four_oh_four(self):
-        response = self.client.get('/this-is-not-the-page-you-are-looking-for.html')
+        response = self.client.get(
+            '/this-is-not-the-page-you-are-looking-for.html')
         self.assertEqual(404, response.status_code)
 
 

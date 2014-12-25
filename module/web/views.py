@@ -6,10 +6,10 @@ from boski.views.base import TemplateTextPlainView
 
 
 class IndexView(TemplateTextPlainView):
-    template_name='wip.txt'
+    template_name = 'wip.txt'
 
     def dispatch(self, request, *args, **kwargs):
         if not settings.IS_WIP:
             return redirect('blog:index', permanent=True)
-        
+
         return super(IndexView, self).dispatch(request, *args, **kwargs)

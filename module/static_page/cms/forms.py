@@ -1,6 +1,5 @@
 # -*- coding:utf-8 -*-
 from django import forms
-from django.utils.encoding import force_text, smart_text
 from django.utils.translation import ugettext_lazy as _, string_concat
 from module.static_page.models import Entry
 
@@ -22,11 +21,20 @@ def add_required_to_label(cls, class_name='required'):
 
 
 class EntryForm(forms.ModelForm):
-    title = forms.CharField(label=_('Title'), required=True,
-                            widget=forms.TextInput(attrs={'placeholder': _('Enter title')}))
-    content = forms.CharField(label=_('Content'), required=True,
-                              widget=forms.Textarea(
-                                  attrs={'placeholder': _('Enter content'), 'rows': '20', 'cols': '40'}))
+    """Basic form for new entries"""
+    title = forms.CharField(
+        label=_('Title'),
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': _('Enter title')}),
+    )
+    content = forms.CharField(
+        label=_('Content'),
+        required=True,
+        widget=forms.Textarea(attrs={
+            'placeholder': _('Enter content'),
+            'rows': '20', 'cols': '40',
+        })
+    )
 
     class Meta:
         model = Entry

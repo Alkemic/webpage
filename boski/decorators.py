@@ -38,8 +38,8 @@ def with_template(arg):
                 ret = func(request, *args, **kwargs)
                 if isinstance(ret, HttpResponse):
                     return ret
-                return TemplateResponse(request, ret.get('template_name',
-                                                         self.default_template_name), ret)
+                return TemplateResponse(request, ret.get(
+                    'template_name', self.default_template_name), ret)
 
             update_wrapper(decorated_func, func)
             return decorated_func
