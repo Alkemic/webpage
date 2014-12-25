@@ -1,0 +1,82 @@
+{% extends "cms/base.html" %}
+{% load i18n bootstrap3 utils_tags %}
+
+{% block title %}{{ name }}{% endblock %}
+
+{% block content %}
+    <h3 class="page-header">{{ name }}</h3>
+
+    <div role="tabpanel">
+        <ul class="nav nav-tabs" role="tablist" id="tabs">
+            <li role="presentation" class="active"><a href="#entry" aria-controls="entry" role="tab" data-toggle="tab">{% trans "Contents" %}</a></li>
+            <li role="presentation"  id="preview-tab"><a href="#preview" aria-controls="preview" role="tab" data-toggle="tab">{% trans "Preview" %}</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane spacer active" id="entry">
+                <form class="form-horizontal" method="post" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% bootstrap_form form layout='horizontal' field_class='col-sm-9' label_class='col-sm-3' %}
+
+                    <div class="form-actions">
+                        <div class="pull-left col-sm-3">&nbsp;</div>
+                        <div class="pull-rightcol-sm-9">
+                            <button type="submit" class="btn btn-primary" name="next" value="none">
+                                <i class="glyphicon glyphicon-floppy-disk"></i> {% trans 'Save' %}
+                            </button>
+                            <button type="submit" class="btn btn-default" name="next" value="edit">
+                                <i class="glyphicon glyphicon-floppy-disk"></i> {% trans 'Save and continue' %}
+                            </button>
+                            <a class="btn btn-default" href="{% url 'index'|prepend_namespace:request %}">
+                                <i class="glyphicon glyphicon-arrow-left"></i> {% trans 'Cancel' %}
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div role="tabpanel" class="tab-pane spacer" id="preview">
+                <div class="loading" id="prev-loading">Ładowanie podglądu...</div>
+                <div id="prev"></div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_script %}
+<script>
+$(document).ready(function(){
+    $('ul#tabs li a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
+
+    $('#preview-tab').click(function () {
+        var form = $('div#entry form :input'),
+            prev = $('#prev'),
+            prevLoading = $('#prev-loading');
+
+        prevLoading.show();
+        prev.hide();
+        console.log(form.filter(':input[name=content], :input[name=csrfmiddlewaretoken], :input[name=teaser]').serialize());
+        $.ajax({
+            url: '/cms/bbcode_preview/',
+            type: 'POST',
+            data: form.filter(':input[name=content], :input[name=csrfmiddlewaretoken], :input[name=teaser]').serialize(),
+            dataType: 'json'
+        }).success(function (data) {
+            prevLoading.hide();
+            prev.html(data.content);
+            prev.show();
+        }).error(function (data) {
+            console.log(data);
+            alert('wystąpił błąd podczas ładowania podglądu');
+            prevLoading.hide();
+            prev.show();
+        });
+
+    })
+});
+</script>
+{% endblock %}

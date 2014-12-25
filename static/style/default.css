@@ -25,3 +25,4 @@ form.search input{height: 28px !important; margin-top: 5px;}
 
 /* CMS CSS part */
 body#cms .container{max-width: 1090px;}
+body#cms .spacer{padding: 15px 10px;}

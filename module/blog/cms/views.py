@@ -52,6 +52,7 @@ class List(LoginRequiredMixin, ListView):
 
 
 class Update(LoginRequiredMixin, UpdateView):
+    template_name = "blog/cms/update.html"
     model = Entry
     fields = ['title', 'teaser', 'content', 'tags', 'is_active']
 

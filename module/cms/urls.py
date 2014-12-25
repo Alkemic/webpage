@@ -28,3 +28,8 @@ urlpatterns = patterns(
     url(r'login/$', Login.as_view(), name='login'),
     url(r'logout/$', Logout.as_view(), name='logout'),
 )
+
+urlpatterns += patterns(
+    'boski.views.bbcode',
+    url(r'bbcode_preview/$', 'render', name='bbcode_preview'),
+)
